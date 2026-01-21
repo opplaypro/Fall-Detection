@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmapa Projektu: System Detekcji Upadków (Python/Kivy)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Config & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F9FAFB', // Cool Gray 50
+                            100: '#F3F4F6',
+                            200: '#E5E7EB',
+                            300: '#D1D5DB',
+                            400: '#9CA3AF',
+                            500: '#6B7280',
+                            600: '#4B5563',
+                            700: '#374151',
+                            800: '#1F2937', // Dark Gray Text
+                            900: '#111827',
+                            accent: '#3B82F6', // Blue for tech focus
+                            danger: '#EF4444', // Red for alarms
+                            success: '#10B981', // Green for valid states
+                            code: '#282C34', // Dark background for code blocks
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F3F4F6; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF; 
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-item.active {
+            background-color: #EFF6FF; /* brand-accent light */
+            color: #1D4ED8; /* brand-accent dark */
+            border-left: 4px solid #3B82F6;
+        }
+
+        /* Code Block Styling */
+        pre {
+            background-color: #1F2937;
+            color: #E5E7EB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-brand-50 text-brand-800 antialiased h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-64 bg-white border-r border-brand-200 flex flex-col hidden md:flex shadow-sm z-20">
+        <div class="p-6 border-b border-brand-100">
+            <div class="flex items-center gap-2 text-brand-accent font-bold text-xl tracking-tight">
+                <i class="fa-solid fa-person-falling"></i>
+                <span>FallDetect<span class="text-brand-800">Dev</span></span>
+            </div>
+            <p class="text-xs text-brand-500 mt-1">Interaktywna Roadmapa</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 px-3">
+                <li><button onclick="router('overview')" id="nav-overview" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-chart-pie w-4"></i> Przegląd Projektu</button></li>
+                <li><button onclick="router('phase1')" id="nav-phase1" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-terminal w-4"></i> 1. Środowisko (WSL2)</button></li>
+                <li><button onclick="router('phase2')" id="nav-phase2" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-sitemap w-4"></i> 2. Architektura</button></li>
+                <li><button onclick="router('phase3')" id="nav-phase3" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-microchip w-4"></i> 3. Usługa w Tle</button></li>
+                <li><button onclick="router('phase4')" id="nav-phase4" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-wave-square w-4"></i> 4. Algorytmy Detekcji</button></li>
+                <li><button onclick="router('phase5')" id="nav-phase5" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-bell w-4"></i> 5. Reakcja i Alarmy</button></li>
+                <li><button onclick="router('phase6')" id="nav-phase6" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-mobile-screen w-4"></i> 6. Interfejs (UI)</button></li>
+                <li><button onclick="router('phase7')" id="nav-phase7" class="nav-item w-full text-left px-4 py-3 rounded-md text-sm font-medium text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-3"><i class="fa-solid fa-rocket w-4"></i> 7. Wdrożenie</button></li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-brand-100 bg-brand-50">
+            <div class="flex items-center gap-3">
+                <div class="bg-brand-200 rounded-full p-2 text-brand-600">
+                    <i class="fa-brands fa-python"></i>
+                </div>
+                <div class="text-xs">
+                    <div class="font-bold text-brand-800">Python + Kivy</div>
+                    <div class="text-brand-500">Android Target</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MOBILE HEADER -->
+    <div class="fixed top-0 left-0 w-full bg-white border-b border-brand-200 p-4 flex justify-between items-center md:hidden z-30">
+        <div class="font-bold text-brand-accent"><i class="fa-solid fa-person-falling"></i> FallDetectDev</div>
+        <button onclick="toggleMobileMenu()" class="text-brand-600 hover:text-brand-900 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div id="mobile-menu" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 hidden flex justify-end">
+        <div class="bg-white w-4/5 h-full p-4 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-bold text-lg">Menu</h2>
+                <button onclick="toggleMobileMenu()" class="text-gray-500"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <!-- Mobile nav links injected here by JS logic if needed, or simply duplicate structure -->
+            <ul class="space-y-2" id="mobile-nav-list">
+                <!-- Populated by JS -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-brand-50 pt-16 md:pt-0 relative">
+        <div id="content-area" class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 scroll-smooth">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        
+        // Defined first to avoid initialization ReferenceError
+        const techStack = [
+            { name: 'Python 3', icon: 'fa-brands fa-python', desc: 'Język logiczny' },
+            { name: 'Kivy', icon: 'fa-solid fa-layer-group', desc: 'Interfejs UI' },
+            { name: 'Plyer', icon: 'fa-solid fa-mobile', desc: 'Dostęp do sensorów' },
+            { name: 'Buildozer', icon: 'fa-solid fa-box', desc: 'Kompilacja APK' },
+            { name: 'SQLite', icon: 'fa-solid fa-database', desc: 'Baza danych' }
+        ];
+
+        function generateTechCards() {
+            return techStack.map(tech => `
+                <div class="bg-white p-4 rounded-lg border border-brand-200 text-center hover:shadow-md transition-shadow">
+                    <i class="${tech.icon} text-3xl text-brand-600 mb-2"></i>
+                    <div class="font-bold text-sm text-brand-800">${tech.name}</div>
+                    <div class="text-xs text-brand-500">${tech.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        const projectData = {
+            techStack: techStack,
+            phases: {
+                overview: {
+                    title: "Przegląd Projektu",
+                    subtitle: "System Detekcji Upadków - Koncepcja i Harmonogram",
+                    content: `
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-brand-200 col-span-1 lg:col-span-2">
+                                <h3 class="text-lg font-bold text-brand-800 mb-4">Cel Projektu</h3>
+                                <p class="text-brand-600 leading-relaxed">
+                                    Opracowanie prototypu aplikacji mobilnej na platformę Android, funkcjonującej jako usługa w tle. 
+                                    Głównym zadaniem systemu jest analiza danych z akcelerometru w czasie rzeczywistym (20Hz) 
+                                    oraz inicjowanie procedur alarmowych w przypadku zidentyfikowania wzorców ruchowych charakterystycznych dla upadku.
+                                </p>
+                                <div class="mt-6 flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">Android Service</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Accelerometer</span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">Machine Learning (Opcja)</span>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-brand-200 flex flex-col justify-center items-center">
+                                <h3 class="text-sm font-semibold text-brand-500 uppercase tracking-wide mb-2">Szacowany Wysiłek</h3>
+                                <div class="chart-container" style="height: 200px;">
+                                    <canvas id="effortChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-brand-800 mb-4">Stos Technologiczny</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            ${generateTechCards()}
+                        </div>
+                    `
+                },
+                phase1: {
+                    title: "Faza 1: Środowisko Programistyczne",
+                    subtitle: "Konfiguracja Podsystemu Windows dla Linux (WSL2)",
+                    intro: "Ta sekcja przeprowadzi Cię przez proces przygotowania środowiska pracy. Narzędzie Buildozer wymaga środowiska Linux, dlatego konfigurujemy WSL2 na Windows.",
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                <h4 class="font-bold text-brand-800 flex items-center gap-2 mb-4">
+                                    <span class="bg-brand-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                                    Instalacja WSL2 i Ubuntu
+                                </h4>
+                                <ul class="list-disc list-inside text-sm text-brand-600 space-y-2 ml-2">
+                                    <li>Zainstaluj <strong>Ubuntu 22.04 LTS</strong> z Microsoft Store.</li>
+                                    <li>Uruchom terminal i zaktualizuj pakiety:</li>
+                                </ul>
+                                <div class="mt-3">
+                                    <pre>sudo apt update && sudo apt upgrade</pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                <h4 class="font-bold text-brand-800 flex items-center gap-2 mb-4">
+                                    <span class="bg-brand-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                                    Zależności Systemowe
+                                </h4>
+                                <p class="text-sm text-brand-600 mb-2">Buildozer wymaga specyficznych bibliotek do kompilacji kodu Python na Androida.</p>
+                                <div class="mt-3">
+                                    <pre>sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev</pre>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm border-l-4 border-l-brand-accent">
+                                <h4 class="font-bold text-brand-800 mb-2">Proof of Concept (POC)</h4>
+                                <p class="text-sm text-brand-600 mb-4">
+                                    Zanim zaczniesz pisać skomplikowaną logikę, sprawdź czy potrafisz skompilować pustą aplikację.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button class="flex-1 bg-brand-100 hover:bg-brand-200 p-3 rounded text-sm text-brand-700 font-medium transition text-left">
+                                        1. buildozer init
+                                    </button>
+                                    <button class="flex-1 bg-brand-100 hover:bg-brand-200 p-3 rounded text-sm text-brand-700 font-medium transition text-left">
+                                        2. Podłącz telefon (Debugowanie USB)
+                                    </button>
+                                    <button class="flex-1 bg-brand-800 hover:bg-brand-900 p-3 rounded text-sm text-white font-medium transition text-left">
+                                        3. buildozer android debug deploy run
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                phase2: {
+                    title: "Faza 2: Architektura Systemu",
+                    subtitle: "Struktura Plików i Model Danych",
+                    intro: "Projekt zakłada separację interfejsu użytkownika (UI) od usługi działającej w tle (Backend). Komunikacja odbywa się asynchronicznie poprzez bazę danych SQLite.",
+                    content: `
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- File Structure -->
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                <h4 class="font-bold text-brand-800 mb-4"><i class="fa-regular fa-folder-open mr-2"></i>Struktura Projektu</h4>
+                                <div class="font-mono text-sm text-brand-600 space-y-2">
+                                    <div class="flex items-center"><i class="fa-solid fa-folder text-yellow-500 mr-2"></i> /FallDetector</div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-brands fa-python text-blue-500 mr-2"></i> <span>main.py</span> <span class="ml-auto text-xs text-brand-400">Interfejs (Frontend)</span></div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-brands fa-python text-blue-500 mr-2"></i> <span>service.py</span> <span class="ml-auto text-xs text-brand-400">Usługa (Backend)</span></div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-brands fa-python text-blue-500 mr-2"></i> <span>database.py</span> <span class="ml-auto text-xs text-brand-400">Model SQLite</span></div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-brands fa-python text-blue-500 mr-2"></i> <span>utils.py</span> <span class="ml-auto text-xs text-brand-400">Algorytmy</span></div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-solid fa-file-code text-orange-500 mr-2"></i> <span>fall.kv</span> <span class="ml-auto text-xs text-brand-400">Layout Kivy</span></div>
+                                    <div class="pl-6 flex items-center group hover:bg-brand-50 p-1 rounded"><i class="fa-solid fa-gear text-gray-500 mr-2"></i> <span>buildozer.spec</span> <span class="ml-auto text-xs text-brand-400">Konfiguracja</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Database Schema -->
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                <h4 class="font-bold text-brand-800 mb-4"><i class="fa-solid fa-database mr-2"></i>Baza Danych (SQLite)</h4>
+                                <p class="text-sm text-brand-600 mb-4">Baza danych pełni rolę bufora komunikacyjnego między procesami.</p>
+                                
+                                <div class="space-y-4">
+                                    <div class="border border-brand-200 rounded p-3">
+                                        <div class="font-bold text-xs uppercase text-brand-400 mb-1">Tabela: settings</div>
+                                        <div class="flex gap-2 text-sm">
+                                            <span class="bg-gray-100 px-2 rounded">phone_number (TEXT)</span>
+                                            <span class="bg-gray-100 px-2 rounded">sensitivity (REAL)</span>
+                                        </div>
+                                    </div>
+                                    <div class="border border-brand-200 rounded p-3">
+                                        <div class="font-bold text-xs uppercase text-brand-400 mb-1">Tabela: history</div>
+                                        <div class="flex flex-wrap gap-2 text-sm">
+                                            <span class="bg-gray-100 px-2 rounded">id (INT)</span>
+                                            <span class="bg-gray-100 px-2 rounded">timestamp (DATETIME)</span>
+                                            <span class="bg-gray-100 px-2 rounded">type (TEXT)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                phase3: {
+                    title: "Faza 3: Usługa w Tle (Android Service)",
+                    subtitle: "Ciągły Monitoring Sensora",
+                    intro: "Standardowa aplikacja zatrzymuje działanie po wygaszeniu ekranu. Aby analizować dane z akcelerometru 24/7, musimy zaimplementować tzw. Foreground Service.",
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+                                <h4 class="font-bold text-blue-700">Wymaganie Krytyczne: Foreground Service</h4>
+                                <p class="text-sm text-blue-600 mt-1">
+                                    Usługa musi wyświetlać <strong>trwałe powiadomienie</strong> na pasku systemowym ("Monitoring aktywny"). 
+                                    Bez tego system Android zabije proces usługi, aby oszczędzać baterię.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-brand-800 mb-2">Logika Pętli (service.py)</h4>
+                                    <pre>
+import time
+from plyer import accelerometer
+
+accelerometer.enable()
+
+while True:
+    # 20Hz Sampling Rate
+    time.sleep(0.05) 
+    
+    # Odczyt sensora
+    val = accelerometer.acceleration
+    # val = (x, y, z)
+    
+    # ... Analiza Algorytmem ...
+                                    </pre>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-brand-800 mb-2">Rejestracja w Kivy (main.py)</h4>
+                                    <pre>
+if platform == 'android':
+    from android import mActivity
+    context = mActivity.getApplicationContext()
+    
+    SERVICE_NAME = str(context.getPackageName()) \\
+                 + '.Service' + 'Myservice'
+                 
+    service = mActivity.getSystemService(
+        Context.ACTIVITY_SERVICE
+    )
+    service.startService(...)
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                phase4: {
+                    title: "Faza 4: Algorytmy Detekcji",
+                    subtitle: "Symulator Analizy Fizycznej",
+                    intro: "Wybierz metodę detekcji. Poniższy symulator demonstruje 'Ścieżkę A' (Algorytm Fizyczny) oparty na analizie wektora G w czasie.",
+                    content: `
+                        <div class="mb-6">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-brand-200">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-bold text-brand-800">Symulator Akcelerometru (Oś G)</h4>
+                                    <div class="space-x-2">
+                                        <button onclick="simulateNormal()" class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 font-medium">Ruch Normalny</button>
+                                        <button onclick="simulateFall()" class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 font-medium border border-red-200">Symuluj Upadek</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="algoChart"></canvas>
+                                </div>
+                                <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div class="p-2 bg-gray-50 rounded border border-gray-100">
+                                        <div class="font-bold text-gray-500">Stan 0</div>
+                                        <div>Spoczynek (~1g)</div>
+                                    </div>
+                                    <div class="p-2 bg-yellow-50 rounded border border-yellow-100">
+                                        <div class="font-bold text-yellow-600">Stan 1</div>
+                                        <div>Swobodny Spadek (< 3m/s²)</div>
+                                    </div>
+                                    <div class="p-2 bg-red-50 rounded border border-red-100">
+                                        <div class="font-bold text-red-600">Stan 2</div>
+                                        <div>Uderzenie (> 25m/s²)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-5 rounded-lg border border-brand-200">
+                                <h4 class="font-bold text-brand-800 mb-2 border-b pb-2">Ścieżka A: Analiza Progowa</h4>
+                                <ul class="list-disc list-inside text-sm text-brand-600 space-y-2">
+                                    <li>Obliczanie wektora $G = \\sqrt{x^2 + y^2 + z^2}$</li>
+                                    <li>Maszyna stanów (Spadek -> Uderzenie -> Bezruch).</li>
+                                    <li>Zalety: Prosta implementacja, niskie zużycie CPU.</li>
+                                    <li>Wady: Możliwe fałszywe alarmy przy rzuceniu telefonem.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-5 rounded-lg border border-brand-200 opacity-75">
+                                <h4 class="font-bold text-brand-800 mb-2 border-b pb-2">Ścieżka B: Machine Learning</h4>
+                                <ul class="list-disc list-inside text-sm text-brand-600 space-y-2">
+                                    <li>Zbieranie danych CSV z urządzenia.</li>
+                                    <li>Trening modelu (Decision Tree) na PC (scikit-learn).</li>
+                                    <li>Eksport reguł \`if/else\` do pliku \`service.py\`.</li>
+                                    <li>Zalety: Wyższa precyzja.</li>
+                                    <li>Wady: Wymaga fazy zbierania danych treningowych.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                phase5: {
+                    title: "Faza 5: Procedury Reagowania",
+                    subtitle: "Alarm Dźwiękowy i SMS",
+                    intro: "Po wykryciu upadku system musi podjąć natychmiastowe działanie. Wykorzystujemy bibliotekę Plyer do dostępu do natywnych funkcji telefonu.",
+                    content: `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm text-center">
+                                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                </div>
+                                <h4 class="font-bold text-brand-800">Sygnalizacja Audio</h4>
+                                <p class="text-xs text-brand-500 mb-4">Odtworzenie głośnego pliku alarm.wav</p>
+                                <pre class="text-left text-xs">
+from plyer import audio
+audio.play_file('alarm.wav')
+                                </pre>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border border-brand-200 shadow-sm text-center">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <h4 class="font-bold text-brand-800">Wiadomość SMS</h4>
+                                <p class="text-xs text-brand-500 mb-4">Wysłanie lokalizacji/alarmu do opiekuna</p>
+                                <pre class="text-left text-xs">
+from plyer import sms
+sms.send(recipient=numer, 
+         message="ALARM UPADEK!")
+                                </pre>
+                                <div class="mt-2 text-xs text-red-500 font-semibold">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Wymaga uprawnienia SEND_SMS
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                phase6: {
+                    title: "Faza 6: Interfejs Użytkownika (UI)",
+                    subtitle: "Panel Sterowania Kivy",
+                    intro: "Frontend aplikacji służy do konfiguracji i wizualizacji stanu. Nie wykonuje on detekcji (to zadanie usługi), ale odczytuje jej status.",
+                    content: `
+                        <div class="flex flex-col md:flex-row gap-8">
+                            <!-- Mockup -->
+                            <div class="w-full md:w-1/3 bg-black rounded-[2rem] p-3 border-4 border-gray-800 shadow-2xl relative">
+                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                                <div class="bg-white h-[500px] w-full rounded-[1.5rem] overflow-hidden flex flex-col relative">
+                                    <!-- App Header -->
+                                    <div class="bg-blue-600 p-4 text-white pt-8">
+                                        <h3 class="font-bold text-lg">FallDetector</h3>
+                                        <div class="text-xs opacity-80">Monitoring aktywny</div>
+                                    </div>
+                                    <!-- App Body -->
+                                    <div class="flex-1 p-4 flex flex-col items-center justify-center gap-6">
+                                        <div class="w-32 h-32 rounded-full bg-green-100 border-4 border-green-500 flex items-center justify-center shadow-lg animate-pulse">
+                                            <i class="fa-solid fa-shield-heart text-4xl text-green-600"></i>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="font-bold text-2xl text-gray-800">OK</div>
+                                            <div class="text-sm text-gray-500">System czuwa</div>
+                                        </div>
+                                        <button class="w-full bg-red-500 text-white py-3 rounded-lg font-bold shadow hover:bg-red-600 transition">STOP MONITORING</button>
+                                    </div>
+                                    <!-- App Footer -->
+                                    <div class="bg-gray-100 p-3 flex justify-around text-gray-400 border-t">
+                                        <i class="fa-solid fa-house text-blue-600"></i>
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+                                        <i class="fa-solid fa-gear"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="flex-1 space-y-6">
+                                <div>
+                                    <h4 class="font-bold text-brand-800 mb-2">Komponenty UI</h4>
+                                    <ul class="list-disc list-inside text-sm text-brand-600 space-y-2">
+                                        <li><strong>ToggleButton:</strong> Aktywacja/Dezaktywacja usługi.</li>
+                                        <li><strong>Indicator:</strong> Wizualizacja statusu (Zielony/Czerwony) odczytywana z bazy.</li>
+                                        <li><strong>RecycleView:</strong> Lista historii zdarzeń.</li>
+                                        <li><strong>TextInput:</strong> Konfiguracja numeru alarmowego (z walidacją cyfr).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded border border-yellow-200">
+                                    <h4 class="font-bold text-yellow-800 text-sm mb-1">Clock.schedule_interval</h4>
+                                    <p class="text-xs text-yellow-700">
+                                        UI musi cyklicznie (np. co 1s) odpytywać bazę danych o nowe zdarzenia, ponieważ Kivy nie obsługuje automatycznego odświeżania na podstawie zmian w bazie SQLite.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                phase7: {
+                    title: "Faza 7: Finalizacja i Wdrożenie",
+                    subtitle: "Buildozer Spec & Debugging",
+                    intro: "Ostatni etap to konfiguracja pliku `buildozer.spec`, który steruje procesem pakowania aplikacji do formatu APK.",
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-gray-900 text-gray-300 p-6 rounded-lg font-mono text-sm shadow-inner">
+                                <div class="text-gray-500 mb-2"># buildozer.spec - Kluczowe ustawienia</div>
+                                
+                                <div class="mb-4">
+                                    <span class="text-purple-400">requirements</span> = python3,kivy,plyer,android,jnius,sqlite3
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <span class="text-purple-400">android.permissions</span> = INTERNET,ACCESS_FINE_LOCATION,<span class="text-red-400">SEND_SMS</span>,WAKE_LOCK,<span class="text-blue-400">FOREGROUND_SERVICE</span>,VIBRATE
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <span class="text-purple-400">orientation</span> = portrait
+                                </div>
+                                
+                                <div>
+                                    <span class="text-purple-400">services</span> = myservice:service.py
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-white p-5 rounded border border-brand-200">
+                                    <h4 class="font-bold text-brand-800 mb-2">Diagnostyka (Logcat)</h4>
+                                    <p class="text-sm text-brand-600 mb-2">Jeśli aplikacja działa na PC, a nie na telefonie, użyj \`adb logcat\` do podglądu błędów Pythona.</p>
+                                    <pre class="text-xs">adb logcat -s "python" "AndroidRuntime"</pre>
+                                </div>
+                                <div class="bg-white p-5 rounded border border-brand-200">
+                                    <h4 class="font-bold text-brand-800 mb-2">Testy Walidacyjne</h4>
+                                    <ul class="list-disc list-inside text-xs text-brand-600 space-y-1">
+                                        <li><strong>Fałszywe pozytywy:</strong> Rzuć telefon na łóżko (miękkie lądowanie powinno dać mniejszy pik G).</li>
+                                        <li><strong>Keep Alive:</strong> Sprawdź czy alarm zadziała po 15 min uśpienia.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                }
+            }
+        };
+
+        // --- CHART GENERATION ---
+
+        let algoChartInstance = null;
+        let effortChartInstance = null;
+
+        function initCharts() {
+            // 1. Effort Chart (Overview)
+            const ctxEffort = document.getElementById('effortChart');
+            if (ctxEffort) {
+                if (effortChartInstance) effortChartInstance.destroy();
+                effortChartInstance = new Chart(ctxEffort, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Konfiguracja', 'Architektura', 'Usługa (Service)', 'Algorytmy', 'Reakcja', 'UI', 'Testy'],
+                        datasets: [{
+                            data: [10, 10, 25, 20, 10, 15, 10],
+                            backgroundColor: ['#E5E7EB', '#D1D5DB', '#3B82F6', '#2563EB', '#1D4ED8', '#93C5FD', '#60A5FA'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // 2. Algorithm Chart (Phase 4) - only if element exists
+            const ctxAlgo = document.getElementById('algoChart');
+            if (ctxAlgo) {
+                if (algoChartInstance) algoChartInstance.destroy();
+                
+                // Initial Data: Steady State (~9.8m/s2)
+                const labels = Array.from({length: 50}, (_, i) => i);
+                const data = Array.from({length: 50}, () => 9.8 + (Math.random() - 0.5));
+
+                algoChartInstance = new Chart(ctxAlgo, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Wektor G (m/s²)',
+                            data: data,
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 0
+                        }, {
+                            label: 'Próg Upadku (góra)',
+                            data: Array(50).fill(25),
+                            borderColor: '#EF4444',
+                            borderDash: [5, 5],
+                            borderWidth: 1,
+                            pointRadius: 0,
+                            fill: false
+                        }, {
+                            label: 'Próg Spadku (dół)',
+                            data: Array(50).fill(3),
+                            borderColor: '#F59E0B',
+                            borderDash: [5, 5],
+                            borderWidth: 1,
+                            pointRadius: 0,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 0 }, // Performance for simulation
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 40,
+                                title: { display: true, text: 'Przyspieszenie (m/s²)' }
+                            },
+                            x: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- SIMULATION LOGIC ---
+        function simulateNormal() {
+            if (!algoChartInstance) return;
+            const data = Array.from({length: 50}, () => 9.8 + (Math.random() * 2 - 1));
+            algoChartInstance.data.datasets[0].data = data;
+            algoChartInstance.update('none'); // Update without full re-render animation
+        }
+
+        function simulateFall() {
+            if (!algoChartInstance) return;
+            // Pattern: Steady -> Freefall (~0-3g) -> Impact Spike (>25g) -> Rest
+            let data = [];
+            
+            // 1. Pre-fall (Steady) - 10 frames
+            for(let i=0; i<10; i++) data.push(9.8 + (Math.random() - 0.5));
+            
+            // 2. Freefall - 5 frames
+            for(let i=0; i<5; i++) data.push(2.0 + Math.random());
+            
+            // 3. Impact - 3 frames
+            data.push(15.0);
+            data.push(32.0); // SPIKE
+            data.push(18.0);
+            
+            // 4. Post-impact (Rest) - remaining frames
+            for(let i=0; i<32; i++) data.push(9.8 + (Math.random() - 0.5));
+
+            // Animate frame by frame effect? No, simpler to just show the waveform for analysis
+            algoChartInstance.data.datasets[0].data = data;
+            algoChartInstance.update();
+        }
+
+        // --- ROUTING & RENDERING ---
+
+        function router(phaseId) {
+            // Update Active State in Nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.getElementById('nav-' + phaseId);
+            if (navBtn) navBtn.classList.add('active');
+
+            // Find Data
+            const data = projectData.phases[phaseId];
+            if (!data) return;
+
+            // Render Content
+            const contentArea = document.getElementById('content-area');
+            
+            // Fade Out
+            contentArea.style.opacity = '0';
+            
+            setTimeout(() => {
+                contentArea.innerHTML = `
+                    <div class="fade-in max-w-5xl mx-auto pb-12">
+                        <header class="mb-8 border-b border-brand-200 pb-6">
+                            <div class="text-xs font-bold tracking-wider text-brand-accent uppercase mb-1">Roadmapa Projektu</div>
+                            <h1 class="text-3xl font-bold text-brand-900 mb-2">${data.title}</h1>
+                            <h2 class="text-xl text-brand-600 font-medium mb-4">${data.subtitle}</h2>
+                            ${data.intro ? `<p class="text-brand-500 max-w-3xl leading-relaxed">${data.intro}</p>` : ''}
+                        </header>
+                        
+                        <div class="content-body">
+                            ${data.content}
+                        </div>
+                        
+                        <div class="mt-12 pt-6 border-t border-brand-200 flex justify-between text-sm text-brand-400">
+                            <span>System Detekcji Upadków v1.0</span>
+                            <span>Generated from Source Report</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Re-init charts if necessary
+                initCharts();
+
+                // Fade In
+                contentArea.style.opacity = '1';
+                
+                // Mobile menu close
+                document.getElementById('mobile-menu').classList.add('hidden');
+                
+            }, 200);
+        }
+
+        // --- MOBILE MENU ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            
+            // Populate mobile nav if empty
+            const list = document.getElementById('mobile-nav-list');
+            if (list.children.length === 0) {
+                // Clone sidebar links roughly
+                const links = [
+                    {id: 'overview', txt: 'Przegląd'},
+                    {id: 'phase1', txt: '1. Środowisko'},
+                    {id: 'phase2', txt: '2. Architektura'},
+                    {id: 'phase3', txt: '3. Usługa w Tle'},
+                    {id: 'phase4', txt: '4. Algorytmy'},
+                    {id: 'phase5', txt: '5. Reakcja'},
+                    {id: 'phase6', txt: '6. Interfejs'},
+                    {id: 'phase7', txt: '7. Wdrożenie'},
+                ];
+                list.innerHTML = links.map(l => `
+                    <li><button onclick="router('${l.id}')" class="block w-full text-left px-4 py-3 rounded text-gray-700 hover:bg-gray-100 font-medium">${l.txt}</button></li>
+                `).join('');
+            }
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            router('overview');
+        });
+
+    </script>
+</body>
+</html>
