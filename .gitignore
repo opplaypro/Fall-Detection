@@ -1,0 +1,4 @@
+/.venv
+/src/bin
+/src/.buildozer
+latest.log
