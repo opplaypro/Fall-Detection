@@ -1,4 +1,5 @@
 /.venv
 /src/bin
 /src/.buildozer
-latest.log
+*.log
+**/__pycache__
