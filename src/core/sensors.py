@@ -21,9 +21,9 @@ class DataBuffer:
             how many samples to keep in buffer
         """
         self.buffer_size = buffer_size
-        self.buffer_x = np.ndarray([])
-        self.buffer_y = np.ndarray([])
-        self.buffer_z = np.ndarray([])
+        self.buffer_x = np.array([], dtype=float)
+        self.buffer_y = np.array([], dtype=float)
+        self.buffer_z = np.array([], dtype=float)
         self.is_full = False
 
         logger.info(f"Initializing DataBuffer with size {buffer_size}")
@@ -42,18 +42,18 @@ class DataBuffer:
             z-axis data
         """
         if self.buffer_x.size < self.buffer_size:
-            self.buffer_x = np.append(self.buffer_x, x)
-            self.buffer_y = np.append(self.buffer_y, y)
-            self.buffer_z = np.append(self.buffer_z, z)
+            self.buffer_x = np.append(self.buffer_x, x).astype(float)
+            self.buffer_y = np.append(self.buffer_y, y).astype(float)
+            self.buffer_z = np.append(self.buffer_z, z).astype(float)
             if self.buffer_x.size == self.buffer_size:
                 self.is_full = True
         else:
             self.buffer_x = np.roll(self.buffer_x, -1)
             self.buffer_y = np.roll(self.buffer_y, -1)
             self.buffer_z = np.roll(self.buffer_z, -1)
-            self.buffer_x[-1] = x
-            self.buffer_y[-1] = y
-            self.buffer_z[-1] = z
+            self.buffer_x[-1] = float(x)
+            self.buffer_y[-1] = float(y)
+            self.buffer_z[-1] = float(z)
 
     def get_data(self) -> np.ndarray | None:
         """
@@ -187,24 +187,24 @@ class Sensor:
         except Exception as e:
             logger.error(f"Error reading sensors: {e}")
 
-    def get_accelerometer_data(self) -> np.ndarray:
+    def get_accelerometer_data(self) -> np.ndarray | None:
         """
         Returns the buffered accelerometer data.
 
         Returns
         -------
         np.ndarray
-            Buffered accelerometer data
+            Buffered accelerometer data (or none if not enough data)
         """
         return self.accelerometer_data_buffer.get_data()
 
-    def get_gyroscope_data(self) -> np.ndarray:
+    def get_gyroscope_data(self) -> np.ndarray | None:
         """
         Returns the buffered gyroscope data.
 
         Returns
         -------
         np.ndarray
-            Buffered gyroscope data
+            Buffered gyroscope data (or none if not enough data)
         """
         return self.gyroscope_data_buffer.get_data()

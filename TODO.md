@@ -10,10 +10,11 @@
 - [ ] UI
   - [ ] home screen
   - [ ] UI manager
-    - [ ] screen transistions
+    - [ ] screen transitions
   - [ ] all other screens
 - [ ] main.py
 - [ ] app info in buildozer.spec
+- [x] file logging
 
 ## List of things do decite
 
@@ -21,4 +22,5 @@
 
 ## Current APP state
 
-- app reads accelerometer and gyroscope, then changes screen color based on values
+- app reads accelerometer and gyroscope, then changes screen color based on values of an accelerometer
+- changes to green if a threshold of 30m/s2 is detected

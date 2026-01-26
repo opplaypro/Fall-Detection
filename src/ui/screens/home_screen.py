@@ -21,11 +21,11 @@ class HomeScreen(Screen):
             buffer_gyro=data_buffer_gyro,
             frequency=50)
 
-    def on_enter(self):
+    def on_enter(self, *args):
         self.sensor.start_sensor()
         Clock.schedule_interval(self.update_color, 1.0 / 10.0)
 
-    def on_leave(self):
+    def on_leave(self, *args):
         self.sensor.stop_sensor()
         Clock.unschedule(self.update_color)
 
@@ -33,12 +33,12 @@ class HomeScreen(Screen):
         try:
             acc_val = self.sensor.get_accelerometer_data()
             if acc_val is not None:
-                magnitude = detect_fall(acc_val, self.sensor.frequency)
+                mag_val, fall_detected = detect_fall(
+                    acc_val, self.sensor.frequency)
                 # Ensure we have a python float, not a numpy float
-                norm_mag, fall_detected = magnitude
-                norm_mag = float(min(max(norm_mag / 30.0, 0), 1))
-                fall_detected = 1 if fall_detected else 0
-                self.background_color = [norm_mag, fall_detected, 0, 1]
+                norm_mag = float(min(max(mag_val / 30.0, 0), 1))
+                fall_detected_val = 1.0 if fall_detected else 0.0
+                self.background_color = [norm_mag, fall_detected_val, 0, 1]
             elif not self.sensor.accelerometer:
                 import math
                 import time
