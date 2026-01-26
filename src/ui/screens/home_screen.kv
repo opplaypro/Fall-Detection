@@ -10,7 +10,7 @@
         orientation: 'vertical'
         Label:
             text: "Accelerometer Color"
-            color: 0, 0, 0, 1 if (root.background_color[0] + root.background_color[1] + root.background_color[2]) > 1.5 else (1, 1, 1, 1)
+            color: (0, 0, 0, 1) if (root.background_color[0] + root.background_color[1] + root.background_color[2] > 1.5) else (1, 1, 1, 1)
         Label:
             text: f"X: {root.background_color[0]*10:.2f}\nY: {root.background_color[1]*10:.2f}\nZ: {root.background_color[2]*10:.2f}"
-            color: 0, 0, 0, 1 if (root.background_color[0] + root.background_color[1] + root.background_color[2]) > 1.5 else (1, 1, 1, 1)
+            color: (0, 0, 0, 1) if (root.background_color[0] + root.background_color[1] + root.background_color[2] > 1.5) else (1, 1, 1, 1)

@@ -3,6 +3,7 @@ from plyer import accelerometer, gyroscope
 import numpy as np
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,7 +55,7 @@ class DataBuffer:
             self.buffer_y[-1] = y
             self.buffer_z[-1] = z
 
-    def get_data(self) -> np.ndarray:
+    def get_data(self) -> np.ndarray | None:
         """
         Returns the buffered data as a numpy array of shape (buffer_size, 3).
 
@@ -62,11 +63,12 @@ class DataBuffer:
         -------
         np.ndarray
             Buffered data
+        None
+            None if buffer is not full yet
         """
         if not self.is_full:
             logger.error("Buffer is not full yet, cannot get data.")
-
-            raise ValueError("Buffer is not full yet, cannot get data.")
+            return None
 
         data = np.column_stack((self.buffer_x, self.buffer_y, self.buffer_z))
         return data
@@ -78,6 +80,8 @@ class Sensor:
     """
     def __init__(
             self,
+            buffer_acc: DataBuffer | None = None,
+            buffer_gyro: DataBuffer | None = None,
             frequency: int = 50,
             ) -> None:
         """
@@ -88,10 +92,16 @@ class Sensor:
         frequency : int
             Frequency of data collection in Hz.
         """
+        if buffer_acc is None:
+            logger.error("A DataBuffer instance must be provided.")
+            raise ValueError("A DataBuffer instance must be provided.")
+        if buffer_gyro is None:
+            logger.error("A DataBuffer instance must be provided.")
+            raise ValueError("A DataBuffer instance must be provided.")
         self.is_active = False
         self.frequency = frequency
-        self.accelerometer_data_buffer = DataBuffer()
-        self.gyroscope_data_buffer = DataBuffer()
+        self.accelerometer_data_buffer = buffer_acc
+        self.gyroscope_data_buffer = buffer_gyro
         self.accelerometer = accelerometer
         self.gyroscope = gyroscope
 

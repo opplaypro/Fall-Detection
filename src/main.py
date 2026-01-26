@@ -45,7 +45,7 @@ class MyApp(App):
         latest_log.write_text(current_time + '\n', encoding='utf-8')
 
         logging.basicConfig(
-            level=logging.INFO,
+            level=logging.ERROR,
             format='%(asctime)s - %(levelname)s - %(message)s',
             filename=latest_log,
             filemode='a'

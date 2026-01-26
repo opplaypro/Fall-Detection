@@ -1,7 +1,8 @@
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ListProperty
 from kivy.clock import Clock
-from core.sensors import Sensor
+from core.sensors import Sensor, DataBuffer
+from core.algorithm import detect_fall
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,7 +14,12 @@ class HomeScreen(Screen):
 
     def __init__(self, **kwargs):
         super(HomeScreen, self).__init__(**kwargs)
-        self.sensor = Sensor(frequency=10)
+        data_buffer_acc: DataBuffer = DataBuffer()
+        data_buffer_gyro: DataBuffer = DataBuffer()
+        self.sensor: Sensor = Sensor(
+            buffer_acc=data_buffer_acc,
+            buffer_gyro=data_buffer_gyro,
+            frequency=50)
 
     def on_enter(self):
         self.sensor.start_sensor()
@@ -25,13 +31,14 @@ class HomeScreen(Screen):
 
     def update_color(self, dt):
         try:
-            acc_val = self.sensor.accelerometer.acceleration
-            if acc_val and all(v is not None for v in acc_val):
-                x, y, z = acc_val
-                r = min(abs(x) / 10.0, 1.0)
-                g = min(abs(y) / 10.0, 1.0)
-                b = min(abs(z) / 10.0, 1.0)
-                self.background_color = [r, g, b, 1]
+            acc_val = self.sensor.get_accelerometer_data()
+            if acc_val is not None:
+                magnitude = detect_fall(acc_val, self.sensor.frequency)
+                # Ensure we have a python float, not a numpy float
+                norm_mag, fall_detected = magnitude
+                norm_mag = float(min(max(norm_mag / 30.0, 0), 1))
+                fall_detected = 1 if fall_detected else 0
+                self.background_color = [norm_mag, fall_detected, 0, 1]
             elif not self.sensor.accelerometer:
                 import math
                 import time

@@ -9,7 +9,9 @@
     - [ ] g-force threshold
 - [ ] UI
   - [ ] home screen
-- [ ] UI manager
+  - [ ] UI manager
+    - [ ] screen transistions
+  - [ ] all other screens
 - [ ] main.py
 - [ ] app info in buildozer.spec
 
