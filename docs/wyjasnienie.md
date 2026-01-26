@@ -1,21 +1,21 @@
 # Pliki i ich funkcje
 
-Wszystkie pliki znajdują się w folderze `src` (aby było czytelniej)
-.
-├── `buildozer.spec`
-├── `core`
-│   ├── `__init__.py`
-│   ├── `algorithm.py`
-│   ├── `log.py`
-│   ├── `notifier.py`
-│   └── `sensors.py`
-├── `main.py`
-└── `ui`
-    ├── `__init__.py`
-    ├── `screen_manager.py`
-    └── `screens`
-        ├── `__init__.py`
-        ├── `home_screen.kv`
+Wszystkie pliki znajdują się w folderze `src` (aby było czytelniej)\
+.\
+├── `buildozer.spec`\
+├── `core`\
+│   ├── `__init__.py`\
+│   ├── `algorithm.py`\
+│   ├── `log.py`\
+│   ├── `notifier.py`\
+│   └── `sensors.py`\
+├── `main.py`\
+└── `ui`\
+    ├── `__init__.py`\
+    ├── `screen_manager.py`\
+    └── `screens`\
+        ├── `__init__.py`\
+        ├── `home_screen.kv`\
         └── `home_screen.py`
 
 plik `main.py` to punkt startowy
@@ -76,4 +76,4 @@ uruchamia aplikację, tyle
 # Gotowe pliki
 
 - `log.py`
-- `sensors.py` — ewentualnie zmiany, jak będzie bez żyroskopy czy jakieś inne drobne poprawki
+- `sensors.py` — ewentualnie zmiany, jak będzie bez żyroskopu czy jakieś inne drobne poprawki
