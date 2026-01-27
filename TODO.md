@@ -12,9 +12,20 @@
   - [ ] UI manager
     - [ ] screen transitions
   - [ ] all other screens
+    - [ ] log history
+    - [ ] settings
+    - [ ] contacts
+    - [ ] alert (when detected)
 - [ ] main.py
 - [ ] app info in buildozer.spec
 - [x] file logging
+- [ ] assets
+  - [ ] translations (one)
+    - [ ] polish
+    - [ ] english
+  - [ ] icons and images
+
+
 
 ## List of things do decite
 

@@ -36,9 +36,9 @@ class HomeScreen(Screen):
                 mag_val, fall_detected = detect_fall(
                     acc_val, self.sensor.frequency)
                 # Ensure we have a python float, not a numpy float
-                norm_mag = float(min(max(mag_val / 30.0, 0), 1))
+                norm_mag = float(min(max(mag_val / 100.0, 0), 1))*10
                 fall_detected_val = 1.0 if fall_detected else 0.0
-                self.background_color = [norm_mag, fall_detected_val, 0, 1]
+                self.background_color = [norm_mag/3, fall_detected_val, 0, 1]
             elif not self.sensor.accelerometer:
                 import math
                 import time

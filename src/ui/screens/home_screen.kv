@@ -1,16 +1,48 @@
 <HomeScreen>:
+    # Set the background color
     canvas.before:
         Color:
-            rgba: self.background_color
+            rgba: 192/255, 192/255, 192/255, 1
         Rectangle:
             pos: self.pos
             size: self.size
 
-    BoxLayout:
-        orientation: 'vertical'
+    
+    FloatLayout:
+        size_hint: 1, 1
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
         Label:
-            text: "Accelerometer Color"
-            color: (0, 0, 0, 1) if (root.background_color[0] + root.background_color[1] + root.background_color[2] > 1.5) else (1, 1, 1, 1)
+            text: "Welcome to the Home Screen"
+            font_size: '24sp'
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"center_x": 0.5, "top": 0.8}
+        
         Label:
-            text: f"X: {root.background_color[0]*10:.2f}\nY: {root.background_color[1]*10:.2f}\nZ: {root.background_color[2]*10:.2f}"
-            color: (0, 0, 0, 1) if (root.background_color[0] + root.background_color[1] + root.background_color[2] > 1.5) else (1, 1, 1, 1)
+            text: "Accelerometer data:"
+            font_size: '20sp'
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"center_x": 0.5, "top": 0.7}
+        
+        Label:
+            id: accelerometer_data
+            text: f"G:: {root.background_color[0]*30:.2f} m/s²"
+            font_size: '18sp'
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"center_x": 0.5, "top": 0.65}
+
+        
+        Widget:
+            id: color_display
+            size_hint: None, 0.3
+            width: self.height
+            pos_hint: {"center_x": 0.5, "center_y": 0.3}
+            canvas:
+                Color:
+                    rgba: root.background_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size

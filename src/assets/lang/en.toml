@@ -1,0 +1,22 @@
+# contains English translations for the application
+# example structure
+
+# home screen translations
+[home]
+a = ""
+
+# settings screen translations
+[settings]
+a = ""
+
+# contacts screen translations
+[contacts]
+a = ""
+
+# alert screen translations
+[alert]
+a = ""
+
+# log screen translations
+[log]
+a = ""
