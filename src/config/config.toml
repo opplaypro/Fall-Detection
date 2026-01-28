@@ -1,0 +1,10 @@
+[info]
+app_name = "Fall Detection"
+version = "1.0.0"
+
+[general]
+language = "en"
+theme_style = "Light"
+
+[logging]
+level = "INFO"

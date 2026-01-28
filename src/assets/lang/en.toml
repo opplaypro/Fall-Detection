@@ -1,22 +1,30 @@
 # contains English translations for the application
 # example structure
 
+[navbar]
+home = "Home"
+contacts = "Contacts"
+history = "History"
+settings = "Settings"
+alert = "Alert"
+
+
 # home screen translations
 [home]
-a = ""
-
-# settings screen translations
-[settings]
 a = ""
 
 # contacts screen translations
 [contacts]
 a = ""
 
-# alert screen translations
-[alert]
-a = ""
-
 # log screen translations
 [log]
+a = ""
+
+# settings screen translations
+[settings]
+a = ""
+
+# alert screen translations
+[alert]
 a = ""

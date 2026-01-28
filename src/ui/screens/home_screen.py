@@ -1,4 +1,4 @@
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 from kivy.properties import ListProperty
 from kivy.clock import Clock
 from core.sensors import Sensor, DataBuffer
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 # temporary class, will change, not documented
-class HomeScreen(Screen):
+class HomeScreen(MDScreen):
 
     background_color = ListProperty([1, 1, 1, 1])
 
@@ -24,7 +24,7 @@ class HomeScreen(Screen):
 
     def on_enter(self, *args):
         self.sensor.start_sensor()
-        # Clock.schedule_interval(self.update_color, 1.0 / 10.0)
+        Clock.schedule_interval(self.update_color, 1.0 / 10.0)
 
     def on_leave(self, *args):
         self.sensor.stop_sensor()
@@ -39,6 +39,14 @@ class HomeScreen(Screen):
                 # Ensure we have a python float, not a numpy float
                 norm_mag = float(min(max(mag_val / 100.0, 0), 1))*10
                 fall_detected_val = 1.0 if fall_detected else 0.0
+                if fall_detected:
+                    self.theme_cls.theme_style = "Dark"
+                    self.ids.status_icon.icon = "shield-alert"
+                    self.ids.status_icon.color = (1, 0, 0, 1)
+                else:
+                    self.theme_cls.theme_style = "Light"
+                    self.ids.status_icon.icon = "shield-check"
+                    self.ids.status_icon.color = (0, 1, 0, 1)
                 self.background_color = [norm_mag/3, fall_detected_val, 0, 1]
             elif not self.sensor.accelerometer:
                 import math

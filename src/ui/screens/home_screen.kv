@@ -1,6 +1,6 @@
 <HomeScreen>:
     # Set the background color
-    md_bg_color: app.colors['bg']
+    md_bg_color: app.theme_cls.backgroundColor
 
     
     FloatLayout:
@@ -9,14 +9,15 @@
 
         MDLabel:
             text: "Welcome to the Home Screen"
-            color: 0, 0, 0
             font_size: '24sp'
             adaptive_size: True
             pos_hint: {"center_x": 0.5, "top": 0.8}
         
         MDIcon:
+            id: status_icon
             icon: "shield-check"
-            color: app.colors['green']
+            theme_color_icon: "Custom"
+            color: 0, 1, 0, 1
             theme_font_size: "Custom"
             font_size: "250sp"
             pos_hint: {"center_x": 0.5, "top": 0.75}
@@ -25,7 +26,6 @@
             id: accelerometer_data
             text: f"G:: {root.background_color[0]*30:.2f} m/s²"
             font_size: '18sp'
-            color: 0, 0, 0, 1
             adaptive_size: True
             pos_hint: {"center_x": 0.5, "top": 0.45}
 
@@ -36,3 +36,58 @@
             width: self.height
             pos_hint: {"center_x": 0.5, "center_y": 0.1}
             md_bg_color: root.background_color
+        
+        # bottom navigation bar
+        MDNavigationBar:
+            # home button
+            MDNavigationItem:
+
+                MDNavigationItemIcon:
+                    icon: "home"
+                    theme_color_icon: "Custom"
+                    color: app.theme_cls.primaryColor
+                    theme_font_size: "Custom"
+                    font_size: "24sp"
+
+                MDNavigationItemLabel:
+                    text: app.lang.get('navbar').get('home', 'Home')
+
+
+            # contacts button
+            MDNavigationItem:
+
+                MDNavigationItemIcon:
+                    icon: "contacts"
+                    theme_color_icon: "Custom"
+                    color: app.theme_cls.primaryColor
+                    theme_font_size: "Custom"
+                    font_size: "24sp"
+
+                MDNavigationItemLabel:
+                    text: app.lang.get('navbar').get('contacts', 'Contacts')
+
+            # history button
+            MDNavigationItem:
+
+                MDNavigationItemIcon:
+                    icon: "history"
+                    theme_color_icon: "Custom"
+                    color: app.theme_cls.primaryColor
+                    theme_font_size: "Custom"
+                    font_size: "24sp"
+
+                MDNavigationItemLabel:
+                    text: app.lang.get('navbar').get('history', 'History')
+
+            # settings button
+            MDNavigationItem:
+
+                MDNavigationItemIcon:
+                    icon: "cog"
+                    theme_color_icon: "Custom"
+                    color: app.theme_cls.primaryColor
+                    theme_font_size: "Custom"
+                    font_size: "24sp"
+
+                MDNavigationItemLabel:
+                    text: app.lang.get('navbar').get('settings', 'Settings')
