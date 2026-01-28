@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 # temporary class, will change, not documented
 class HomeScreen(Screen):
+
     background_color = ListProperty([1, 1, 1, 1])
 
     def __init__(self, **kwargs):
@@ -23,7 +24,7 @@ class HomeScreen(Screen):
 
     def on_enter(self, *args):
         self.sensor.start_sensor()
-        Clock.schedule_interval(self.update_color, 1.0 / 10.0)
+        # Clock.schedule_interval(self.update_color, 1.0 / 10.0)
 
     def on_leave(self, *args):
         self.sensor.stop_sensor()
