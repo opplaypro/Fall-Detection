@@ -1,0 +1,38 @@
+<HistoryScreen>:
+    # Set the background color
+    md_bg_color: app.theme_cls.backgroundColor
+
+    
+    FloatLayout:
+        size_hint: 1, 1
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+        MDLabel:
+            text: "Welcome to the History Screen"
+            font_size: '24sp'
+            adaptive_size: True
+            pos_hint: {"center_x": 0.5, "top": 0.8}
+        
+        MDIcon:
+            id: status_icon
+            icon: "shield-check"
+            theme_color_icon: "Custom"
+            color: 0, 1, 0, 1
+            theme_font_size: "Custom"
+            font_size: "250sp"
+            pos_hint: {"center_x": 0.5, "top": 0.75}
+        
+        MDLabel:
+            id: accelerometer_data
+            text: f"G:: {root.background_color[0]*30:.2f} m/s²"
+            font_size: '18sp'
+            adaptive_size: True
+            pos_hint: {"center_x": 0.5, "top": 0.45}
+
+        
+        MDWidget:
+            id: color_display
+            size_hint: None, 0.3
+            width: self.height
+            pos_hint: {"center_x": 0.5, "center_y": 0.1}
+            md_bg_color: root.background_color

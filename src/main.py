@@ -13,10 +13,12 @@ import toml
 # Import our screen
 from ui.screens.home_screen import HomeScreen
 from ui.screens.settings_screen import SettingsScreen
+from ui.screens.history_screen import HistoryScreen
+from ui.screens.contacts_screen import ContactsScreen
 
 kivy.require('2.0.0')
 
-# Load the KV files
+# Load all KV files
 for kv_file in Path(__file__).parent.glob('ui/screens/*.kv'):
     Builder.load_file(str(kv_file))
 
@@ -57,10 +59,9 @@ class FallDetectionApp(MDApp):
     def on_switch_tabs(self, bar, item, icon, label):
         logger = logging.getLogger(__name__)
         logger.debug(f"Switching to tab: {label}")
-        logger.debug(f"Current screen before switch: {self.root.ids.screen_manager.current}")
-        logger.debug(f"Switching to screen id: {item.id}")
+        logger.debug(f"Switching to screen id: {item.tag}")
 
-        self.root.ids.screen_manager.current = item.tag
+        self.root.ids.screen_manager.current = item.tag  #type: ignore
 
 
 if __name__ == '__main__':
