@@ -25,15 +25,18 @@ class FallDetectionApp(MDApp):
         logger = logging.getLogger(__name__)
         logger.info("Building the application UI")
 
-        # Set theme
-        self.theme_cls.theme_style = "Light"
-        self.theme_cls.primary_palette = "deepskyblue"
-        self.theme_cls.accent_palette = "crimson"
-
         # load configuration
         config_path = Path(__file__).parent / 'config' / 'config.toml'
         self.config = toml.load(config_path)
         logger.info("Configuration loaded")
+
+        # Set theme
+        self.theme_cls.theme_style = self.config.get(
+            'general', {}).get('theme_style', 'Light')
+        self.theme_cls.primary_palette = self.config.get(
+            'general', {}).get('theme_primary_palette', 'midnightblue')
+        self.theme_cls.accent_palette = self.config.get(
+            'general', {}).get('theme_accent_palette', 'crimson')
 
         # get tranlations
         lang_path = self.config.get('general', {}).get('language', 'en')

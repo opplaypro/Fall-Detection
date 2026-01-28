@@ -8,7 +8,7 @@ package.name = FallDetection
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = com.github.opplaypro
-
+    
 # (str) Source code where the main.py live
 source.dir = .
 

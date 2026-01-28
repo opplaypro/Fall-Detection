@@ -5,6 +5,8 @@ version = "1.0.0"
 [general]
 language = "en"
 theme_style = "Light"
+theme_primary_palette = "midnightblue"
+theme_accent_palette = "crimson"
 
 [logging]
 level = "INFO"

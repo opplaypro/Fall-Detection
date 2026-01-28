@@ -1,3 +1,4 @@
+import kivy
 from kivymd.uix.screen import MDScreen
 from kivy.properties import ListProperty
 from kivy.clock import Clock
@@ -24,7 +25,9 @@ class HomeScreen(MDScreen):
 
     def on_enter(self, *args):
         self.sensor.start_sensor()
-        Clock.schedule_interval(self.update_color, 1.0 / 10.0)
+        # Update color only on mobile platforms
+        if kivy.platform == 'android' or kivy.platform == 'ios':
+            Clock.schedule_interval(self.update_color, 1.0 / 10.0)
 
     def on_leave(self, *args):
         self.sensor.stop_sensor()
