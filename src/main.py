@@ -1,20 +1,28 @@
 from core import log
+
 import kivy
-from kivymd.app import MDApp
-from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
+
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.app import MDApp
+
 from pathlib import Path
 import logging
 import toml
 
 # Import our screen
 from ui.screens.home_screen import HomeScreen
+from ui.screens.settings_screen import SettingsScreen
 
 kivy.require('2.0.0')
 
-# Explicitly load the kv file
-kv_path = Path(__file__).parent / 'ui' / 'screens' / 'home_screen.kv'
-Builder.load_file(str(kv_path))
+# Load the KV files
+for kv_file in Path(__file__).parent.glob('ui/screens/*.kv'):
+    Builder.load_file(str(kv_file))
+
+
+class RootLayout(MDBoxLayout):
+    pass
 
 
 class FallDetectionApp(MDApp):
@@ -44,10 +52,15 @@ class FallDetectionApp(MDApp):
         self.lang = toml.load(
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.toml'
             )
+        return RootLayout()
 
-        sm = ScreenManager()
-        sm.add_widget(HomeScreen(name='home'))
-        return sm
+    def on_switch_tabs(self, bar, item, icon, label):
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Switching to tab: {label}")
+        logger.debug(f"Current screen before switch: {self.root.ids.screen_manager.current}")
+        logger.debug(f"Switching to screen id: {item.id}")
+
+        self.root.ids.screen_manager.current = item.tag
 
 
 if __name__ == '__main__':

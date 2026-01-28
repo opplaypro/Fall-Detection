@@ -1,0 +1,71 @@
+<RootLayout>:
+    orientation: 'vertical'
+
+    MDScreenManager:
+        id: screen_manager
+        
+        HomeScreen:
+            name: "home"
+        
+        SettingsScreen:
+            name: "settings"
+    
+    # bottom navigation bar
+    MDNavigationBar:
+        on_switch_tabs: app.on_switch_tabs(*args)
+        # home button
+        MDNavigationItem:
+            tag: "home"
+
+            MDNavigationItemIcon:
+                icon: "home"
+                theme_color_icon: "Custom"
+                color: app.theme_cls.secondaryColor
+                theme_font_size: "Custom"
+                font_size: "24sp"
+
+            MDNavigationItemLabel:
+                text: app.lang.get('navbar').get('home', 'Home')
+
+
+        # contacts button
+        MDNavigationItem:
+            tag: "contacts"
+
+            MDNavigationItemIcon:
+                icon: "contacts"
+                theme_color_icon: "Custom"
+                color: app.theme_cls.secondaryColor
+                theme_font_size: "Custom"
+                font_size: "24sp"
+
+            MDNavigationItemLabel:
+                text: app.lang.get('navbar').get('contacts', 'Contacts')
+
+        # history button
+        MDNavigationItem:
+            tag: "history"
+
+            MDNavigationItemIcon:
+                icon: "history"
+                theme_color_icon: "Custom"
+                color: app.theme_cls.secondaryColor
+                theme_font_size: "Custom"
+                font_size: "24sp"
+
+            MDNavigationItemLabel:
+                text: app.lang.get('navbar').get('history', 'History')
+
+        # settings button
+        MDNavigationItem:
+            tag: "settings"
+
+            MDNavigationItemIcon:
+                icon: "cog"
+                theme_color_icon: "Custom"
+                color: app.theme_cls.secondaryColor
+                theme_font_size: "Custom"
+                font_size: "24sp"
+
+            MDNavigationItemLabel:
+                text: app.lang.get('navbar').get('settings', 'Settings')
