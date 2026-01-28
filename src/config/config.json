@@ -1,0 +1,29 @@
+{
+  "info": {
+    "app_name": "Fall Detection",
+    "version": "1.0.0"
+  },
+  "general": {
+    "language": "en",
+    "theme_style": "Light",
+    "theme_primary_palette": "midnightblue",
+    "theme_accent_palette": "crimson"
+  },
+  "logging": {
+    "level": "DEBUG"
+  },
+  "contacts": [
+    {
+      "name": "John Doe",
+      "phone": "+48123456789"
+    },
+    {
+      "name": "Jane Smith",
+      "phone": "+48987654321"
+    }
+  ],
+  "alert": {
+    "sms_enabled": true,
+    "call_enabled": true
+  }
+}

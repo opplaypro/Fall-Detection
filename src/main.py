@@ -8,14 +8,10 @@ from kivymd.app import MDApp
 
 from pathlib import Path
 import logging
-import toml
+import json
 
-# Import our screen
-from ui.screens.home_screen import HomeScreen
-from ui.screens.settings_screen import SettingsScreen
-from ui.screens.history_screen import HistoryScreen
-from ui.screens.contacts_screen import ContactsScreen
-
+# Import our screens to register them
+import ui  # noqa: F401
 kivy.require('2.0.0')
 
 # Load all KV files
@@ -23,6 +19,7 @@ for kv_file in Path(__file__).parent.glob('ui/screens/*.kv'):
     Builder.load_file(str(kv_file))
 
 
+# Root layout of the application
 class RootLayout(MDBoxLayout):
     pass
 
@@ -36,9 +33,13 @@ class FallDetectionApp(MDApp):
         logger.info("Building the application UI")
 
         # load configuration
-        config_path = Path(__file__).parent / 'config' / 'config.toml'
-        self.config = toml.load(config_path)
+        config_path = Path(__file__).parent / 'config' / 'config.json'
+        self.config = json.load(open(config_path))
         logger.info("Configuration loaded")
+
+        # set logging level to config value
+        logging_level = self.config.get('logging', {}).get('level', 'INFO')
+        logger.setLevel(getattr(logging, logging_level))
 
         # Set theme
         self.theme_cls.theme_style = self.config.get(
@@ -51,9 +52,9 @@ class FallDetectionApp(MDApp):
         # get tranlations
         lang_path = self.config.get('general', {}).get('language', 'en')
         logger.info(f"Setting application language to: {lang_path}")
-        self.lang = toml.load(
-            Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.toml'
-            )
+        self.lang = json.load(open(
+            Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
+            ))
         return RootLayout()
 
     def on_switch_tabs(self, bar, item, icon, label):

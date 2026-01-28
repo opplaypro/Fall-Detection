@@ -1,0 +1,24 @@
+{
+  "navbar": {
+    "home": "Home",
+    "contacts": "Contacts",
+    "history": "History",
+    "settings": "Settings",
+    "alert": "Alert"
+  },
+  "home": {
+    "a": ""
+  },
+  "contacts": {
+    "a": ""
+  },
+  "log": {
+    "a": ""
+  },
+  "settings": {
+    "a": ""
+  },
+  "alert": {
+    "a": ""
+  }
+}
