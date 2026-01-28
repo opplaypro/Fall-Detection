@@ -61,7 +61,7 @@ class FallDetectionApp(MDApp):
         logger.debug(f"Switching to tab: {label}")
         logger.debug(f"Switching to screen id: {item.tag}")
 
-        self.root.ids.screen_manager.current = item.tag  #type: ignore
+        self.root.ids.screen_manager.current = item.tag  # type: ignore
 
 
 if __name__ == '__main__':

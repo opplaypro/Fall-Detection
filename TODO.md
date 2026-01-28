@@ -7,6 +7,7 @@
   - [ ] detection mechanism
     - [ ] ML
     - [ ] g-force threshold
+
 - [ ] UI
   - [ ] home screen
   - [ ] UI manager
@@ -15,17 +16,17 @@
     - [ ] log history
     - [ ] settings
     - [ ] contacts
-    - [ ] alert (when detected)
+  - [ ] alert (when detected)
+
 - [ ] main.py
 - [ ] app info in buildozer.spec
 - [x] file logging
+
 - [ ] assets
-  - [ ] translations (one)
+  - [ ] translations (one or two)
     - [ ] polish
-    - [ ] english
+    - [ ] english ← main focus
   - [ ] icons and images
-
-
 
 ## List of things do decite
 
@@ -35,3 +36,4 @@
 
 - app reads accelerometer and gyroscope, then changes screen color based on values of an accelerometer
 - changes to green if a threshold of 30m/s2 is detected
+- all screens are a copy of main, when switched to, they break whole app (accelerometer part)
