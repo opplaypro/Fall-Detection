@@ -93,11 +93,9 @@ class Sensor:
             Frequency of data collection in Hz.
         """
         if buffer_acc is None:
-            logger.error("A DataBuffer instance must be provided.")
-            raise ValueError("A DataBuffer instance must be provided.")
+            buffer_acc = DataBuffer()
         if buffer_gyro is None:
-            logger.error("A DataBuffer instance must be provided.")
-            raise ValueError("A DataBuffer instance must be provided.")
+            buffer_gyro = DataBuffer()
         self.is_active = False
         self.frequency = frequency
         self.accelerometer_data_buffer = buffer_acc

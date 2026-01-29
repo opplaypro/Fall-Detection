@@ -13,6 +13,8 @@ import json
 
 # Import our screens to register them
 import ui  # noqa: F401
+from core.sensors import Sensor
+
 kivy.require('2.0.0')
 
 # Load all KV files
@@ -46,9 +48,9 @@ class FallDetectionApp(MDApp):
         self.theme_cls.theme_style = self.config.get(
             'general', {}).get('theme_style', 'Light')
         self.theme_cls.primary_palette = self.config.get(
-            'general', {}).get('theme_primary_palette', 'navy')
+            'general', {}).get('theme_primary_palette', 'Red')
         self.theme_cls.accent_palette = self.config.get(
-            'general', {}).get('theme_accent_palette', 'crimson')
+            'general', {}).get('theme_accent_palette', 'Blue')
 
         # get tranlations
         lang_path = self.config.get('general', {}).get('language', 'en')
@@ -56,6 +58,12 @@ class FallDetectionApp(MDApp):
         self.lang = json.load(open(
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
             ))
+
+        # start sensor for global access
+
+        self.sensor: Sensor = Sensor()
+        self.sensor.start_sensor()
+
         return RootLayout()
 
     def on_switch_tabs(self, bar, item, icon, label):

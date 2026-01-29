@@ -14,7 +14,7 @@ class HomeScreen(MDScreen):
         super(HomeScreen, self).__init__(**kwargs)
 
     def on_enter(self, *args):
-        logger.debug("Entered Settings Screen")
+        logger.debug("Entered Home Screen")
 
     def on_leave(self, *args):
-        logger.debug("Left Settings Screen")
+        logger.debug("Left Home Screen")
