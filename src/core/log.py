@@ -57,7 +57,7 @@ def setup_logging(App) -> None:
 
     # Add the handler to the root logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.ERROR)
+    root_logger.setLevel(logging.NOTSET)
     root_logger.addHandler(file_handler)
 
     logger = logging.getLogger(__name__)

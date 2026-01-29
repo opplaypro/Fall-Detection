@@ -10,7 +10,7 @@
     "theme_accent_palette": "crimson"
   },
   "logging": {
-    "level": "DEBUG"
+    "level": "NOTSET"
   },
   "contacts": [
     {
