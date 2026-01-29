@@ -37,3 +37,7 @@
 - app reads accelerometer and gyroscope, then changes screen color based on values of an accelerometer
 - changes to green if a threshold of 30m/s2 is detected
 - all screens are a copy of main, when switched to, they break whole app (accelerometer part)
+
+## rewrite TODO (later)
+
+- [ ] core.log: logging will be run before anything else, before creating app
