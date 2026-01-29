@@ -1,8 +1,7 @@
 import kivy
 from kivymd.uix.screen import MDScreen
-from kivy.properties import ListProperty
 from kivy.clock import Clock
-from core.sensors import Sensor, DataBuffer
+from kivymd.app import MDApp
 from core.algorithm import detect_fall
 import logging
 
@@ -12,45 +11,38 @@ logger = logging.getLogger(__name__)
 # temporary class, will change, not documented
 class SettingsScreen(MDScreen):
 
-    background_color = ListProperty([1, 1, 1, 1])
-
     def __init__(self, **kwargs):
         super(SettingsScreen, self).__init__(**kwargs)
-        data_buffer_acc: DataBuffer = DataBuffer()
-        data_buffer_gyro: DataBuffer = DataBuffer()
-        self.sensor: Sensor = Sensor(
-            buffer_acc=data_buffer_acc,
-            buffer_gyro=data_buffer_gyro,
-            frequency=50)
+        app = MDApp.get_running_app()
+        if app is None or not hasattr(app, 'sensor'):
+            logger.error("Sensor instance not found in MDApp.")
+            raise ValueError("Sensor instance not found in MDApp.")
+        self.sensor = app.sensor
 
     def on_enter(self, *args):
-        self.sensor.start_sensor()
         # Update color only on mobile platforms
         if kivy.platform == 'android' or kivy.platform == 'ios':
             Clock.schedule_interval(self.update_color, 1.0 / 10.0)
 
     def on_leave(self, *args):
-        self.sensor.stop_sensor()
         Clock.unschedule(self.update_color)
 
     def update_color(self, dt):
         try:
             acc_val = self.sensor.get_accelerometer_data()
+            gyro_val = self.sensor.get_gyroscope_data()
             if acc_val is not None:
-                mag_val, fall_detected = detect_fall(
-                    acc_val, self.sensor.frequency)
+                fall_detected = detect_fall(
+                    acc_val,
+                    gyro_val,
+                    self.sensor.frequency)
                 # Ensure we have a python float, not a numpy float
-                norm_mag = float(min(max(mag_val / 100.0, 0), 1))*10
-                fall_detected_val = 1.0 if fall_detected else 0.0
                 if fall_detected:
-                    self.theme_cls.theme_style = "Dark"
                     self.ids.status_icon.icon = "shield-alert"
                     self.ids.status_icon.color = (1, 0, 0, 1)
                 else:
-                    self.theme_cls.theme_style = "Light"
                     self.ids.status_icon.icon = "shield-check"
                     self.ids.status_icon.color = (0, 1, 0, 1)
-                self.background_color = [norm_mag/3, fall_detected_val, 0, 1]
             elif not self.sensor.accelerometer:
                 import math
                 import time
