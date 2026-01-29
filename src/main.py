@@ -30,10 +30,7 @@ class RootLayout(MDBoxLayout):
 class FallDetectionApp(MDApp):
 
     def build(self):
-        # logging errors to file and console
-        log.setup_logging(self)
         self.logger = logging.getLogger(__name__)
-        self.logger.info("Building the application UI")
 
         # load configuration
         config_path = Path(__file__).parent / 'config' / 'config.json'
@@ -68,26 +65,22 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
-        # start sensor for global access
-        self.sensor: Sensor = Sensor()
-        self.sensor.start_sensor()
-        Clock.schedule_interval(self.detect_fall_event, 1.0)
+        if kivy.platform == 'android':
+            import android
+            android.start_service(
+                title='Fall Service',
+                description='Fall Detection Service',
+                arg=''
+            )
         return super().on_start()
 
-    def detect_fall_event(self, dt):
-        accel_data = self.sensor.get_accelerometer_data()
-        gyro_data = self.sensor.get_gyroscope_data()
-        frequency = self.sensor.frequency
-
-        if detect_fall(accel_data, gyro_data, frequency):
-            self.logger.debug("Fall event detected!")
-            # Handle fall event (e.g., notify user, log event, etc.)
 
 
 if __name__ == '__main__':
-    if kivy,platform == 'android':
-        import android
-        android.start_service('service.py')
     if kivy.platform == 'linux':  # only for testing on PC
         Window.size = (412, 915)
-    FallDetectionApp().run()
+    app = FallDetectionApp()
+    log.setup_logging(app)
+    logger = logging.getLogger(__name__)
+    logger.info(logger.name + " started")
+    app.run()

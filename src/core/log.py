@@ -2,26 +2,31 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
+import kivy
+
 
 class LevelFormatter(logging.Formatter):
     """
-    Custom logging formatter to set different formats for different log levels.
+    Custom logging formatter with fixed column widths.
     """
-    FORMATS = {
-        logging.DEBUG: ('%(asctime)s - %(levelname)s - %(message)s '
-                        '[in %(module)s:%(lineno)d]'),
-        logging.INFO: ('%(asctime)s - %(levelname)s - %(message)s'),
-        logging.WARNING: ('%(asctime)s - %(levelname)s - %(message)s'),
-        logging.ERROR: ('%(asctime)s - %(levelname)s - %(message)s '
-                        '[in %(module)s:%(lineno)d]'),
-        logging.CRITICAL: ('%(asctime)s - %(levelname)s - %(message)s '
-                           '[in %(module)s:%(lineno)d]'),
-    }
-
     def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
+        # format time
+        time_str = self.formatTime(record, "%Y-%m-%d %H:%M:%S")
+
+        # format level name to fixed width of 8 characters
+        level_str = f"{record.levelname:<8}"
+
+        # format module and line number
+        if record.levelno in [logging.DEBUG, logging.ERROR, logging.CRITICAL]:
+            location = f"{record.module}:{record.lineno}"
+        else:
+            location = ""
+        location_str = f"{location:<25}"
+
+        # combine all parts into one line
+        fmt = f"{time_str} | {level_str} | {location_str} | "
+        message = record.getMessage()
+        return fmt + message
 
 
 def setup_logging(App) -> None:
@@ -30,7 +35,11 @@ def setup_logging(App) -> None:
     renames the existing latest.log file and initializes a new latest.log
     file with the current date and time.
     """
-    user_data = Path(App.get_running_app().user_data_dir)  # type: ignore
+    if kivy.platform == 'linux':
+        user_data = Path(__file__).parent.parent
+    else:
+        user_data = Path(App.get_running_app().user_data_dir)  # type: ignore
+
     log_directory = user_data / 'logs'
     log_directory.mkdir(parents=True, exist_ok=True)
     latest_log = log_directory / 'latest.log'
@@ -59,6 +68,3 @@ def setup_logging(App) -> None:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.NOTSET)
     root_logger.addHandler(file_handler)
-
-    logger = logging.getLogger(__name__)
-    logger.info("Starting application")
