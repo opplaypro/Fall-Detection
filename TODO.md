@@ -4,9 +4,9 @@
 
 - [ ] core library
   - [x] accelerometer reading
-  - [ ] detection mechanism
+  - [x] detection mechanism
     - [ ] ML
-    - [ ] g-force threshold
+    - [x] g-force threshold
 
 - [ ] UI
   - [ ] home screen

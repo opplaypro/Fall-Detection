@@ -29,12 +29,28 @@ def detect_fall(
     """
     # calculate acceleration magnitude
     magnitude = np.linalg.norm(accelerometer_data, axis=1)
-    # simple peak detection
-    threshold = 30.0  # example threshold for fall detection
-    peaks = magnitude > threshold
-    if np.sum(peaks) > 0:
-        logger.debug("Possible fall peak detected.")
-        return True
-    else:
+    # Parameters for fall detection
+    impact_threshold = 30.0  # m/s^2 (approx 3g)
+    free_fall_threshold = 6.0  # m/s^2 (approx 0.6g)
+    window_duration = 0.5  # seconds (time window to look for free fall before impact)
 
+    # Find indices where magnitude exceeds impact threshold
+    impact_indices = np.where(magnitude > impact_threshold)[0]
+
+    if len(impact_indices) == 0:
         return False
+
+    # Calculate window size in samples
+    window_samples = int(window_duration * frequency)
+
+    for i in impact_indices:
+        # Check a window before the impact for free fall
+        start_idx = max(0, i - window_samples)
+        pre_impact_window = magnitude[start_idx:i]
+
+        # If we find a free fall period shortly before the impact, it's likely a fall
+        if np.any(pre_impact_window < free_fall_threshold):
+            logger.debug(f"Fall detected: Impact at sample {i} preceded by free fall.")
+            return True
+
+    return False
