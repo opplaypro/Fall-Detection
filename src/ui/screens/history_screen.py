@@ -1,5 +1,4 @@
 from kivymd.uix.screen import MDScreen
-from kivy.properties import ListProperty
 import logging
 
 logger = logging.getLogger(__name__)

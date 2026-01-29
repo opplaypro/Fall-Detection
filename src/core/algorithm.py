@@ -1,6 +1,5 @@
 import numpy as np
 import logging
-from typing import Tuple
 
 
 logger = logging.getLogger(__name__)
@@ -16,9 +15,9 @@ def detect_fall(
 
     Parameters
     ----------
-    accelerometer_data : list | np.ndarray
+    accelerometer_data : np.ndarray
         The input accelerometer signal data to analyze.
-    gyroscope_data : list | np.ndarray
+    gyroscope_data : np.ndarray
         The input gyroscope signal data to analyze.
     frequency : int
         The sampling frequency of the data.
