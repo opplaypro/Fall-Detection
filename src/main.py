@@ -5,7 +5,8 @@ import ui  # noqa: F401
 import kivy
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivy.clock import Clock
+from kivy.clock import mainthread
+from oscpy.server import OSCThreadServer
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -65,15 +66,39 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
+        # start OSC server and bind handlers
+        self.osc_server = OSCThreadServer()
+        self.osc_server.listen(address='127.0.0.1', port=3000, default=True)
+        self.osc_server.bind(b'/update', self.handle_update)
+        self.osc_server.bind(b'/error', self.handle_error)
+
         if kivy.platform == 'android':
-            import android
-            android.start_service(
-                title='Fall Service',
-                description='Fall Detection Service',
-                arg=''
-            )
+            try:
+                import android
+                android.start_service(
+                    title='Fall Service',
+                    description='Fall Detection Service',
+                    arg=''
+                    )
+            except ImportError:
+                self.logger.error("Failed to import android module")
         return super().on_start()
 
+    @mainthread
+    def handle_update(self, message):
+        try:
+            data = message.decode('utf-8')
+            self.logger.debug(f"Received update: {data}")
+        except Exception as e:
+            self.logger.error(f"Error handling update message: {e}")
+
+    @mainthread
+    def handle_error(self, message):
+        try:
+            data = message.decode('utf-8')
+            self.logger.error(f"Received error: {data}")
+        except Exception as e:
+            self.logger.error(f"Error handling error message: {e}")
 
 
 if __name__ == '__main__':

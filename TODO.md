@@ -7,6 +7,7 @@
   - [x] detection mechanism
     - [ ] ML
     - [x] g-force threshold
+  - [ ] background service handler
 
 - [ ] UI
   - [ ] home screen
@@ -40,4 +41,5 @@
 
 ## rewrite TODO (later)
 
-- [ ] core.log: logging will be run before anything else, before creating app
+- [x] core.log: logging will be run before anything else, before creating app
+- [ ] changeable `SAMPLING_FREQ` inside service.py
