@@ -2,6 +2,7 @@ from core import log
 
 import kivy
 from kivy.lang import Builder
+from kivy.core.window import Window
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -45,7 +46,7 @@ class FallDetectionApp(MDApp):
         self.theme_cls.theme_style = self.config.get(
             'general', {}).get('theme_style', 'Light')
         self.theme_cls.primary_palette = self.config.get(
-            'general', {}).get('theme_primary_palette', 'midnightblue')
+            'general', {}).get('theme_primary_palette', 'navy')
         self.theme_cls.accent_palette = self.config.get(
             'general', {}).get('theme_accent_palette', 'crimson')
 
@@ -66,4 +67,6 @@ class FallDetectionApp(MDApp):
 
 
 if __name__ == '__main__':
+    if kivy.platform == 'linux':  # only for testing on PC
+        Window.size = (412, 915)
     FallDetectionApp().run()

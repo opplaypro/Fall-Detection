@@ -6,7 +6,7 @@
   "general": {
     "language": "en",
     "theme_style": "Light",
-    "theme_primary_palette": "midnightblue",
+    "theme_primary_palette": "navy",
     "theme_accent_palette": "crimson"
   },
   "logging": {
