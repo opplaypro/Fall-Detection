@@ -22,6 +22,9 @@
       "phone": "+48987654321"
     }
   ],
+  "fall_log": {
+    "file": "data/history.json"
+  },
   "alert": {
     "sms_enabled": true,
     "call_enabled": true
