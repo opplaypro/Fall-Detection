@@ -7,17 +7,17 @@
   - [x] detection mechanism
     - [ ] ML
     - [x] g-force threshold
-  - [ ] background service handler
+  - [x] background service handler
 
 - [ ] UI
-  - [ ] home screen
+  - [x] home screen
   - [ ] UI manager
     - [ ] screen transitions
   - [ ] all other screens
-    - [ ] log history
+    - [x] log history
     - [ ] settings
     - [ ] contacts
-  - [ ] alert (when detected)
+  - [x] alert (when detected)
 
 - [ ] main.py
 - [ ] app info in buildozer.spec
@@ -43,3 +43,4 @@
 
 - [x] core.log: logging will be run before anything else, before creating app
 - [ ] changeable `SAMPLING_FREQ` inside service.py
+- [ ] encrypt user data in `history.json` (if implemented `contacts.json` too)
