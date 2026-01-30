@@ -54,7 +54,7 @@ requirements = python3,kivy,plyer,numpy,kivymd,materialyoucolor,asynckivy,asyncg
 orientation = portrait
 
 # (list) List of service to declare
-services = falldetection:core/service.py
+services = service:service/main.py:foreground:sticky
 #
 # OSX Specific
 #
@@ -94,7 +94,7 @@ fullscreen = 1
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-android.permissions = INTERNET, WAKE_LOCK, VIBRATE
+android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
