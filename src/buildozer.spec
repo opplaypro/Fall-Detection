@@ -54,7 +54,7 @@ requirements = python3,kivy,plyer,numpy,kivymd,materialyoucolor,asynckivy,asyncg
 orientation = portrait
 
 # (list) List of service to declare
-services = service:service/main.py
+services = service:service/main.py:foreground:sticky
 #
 # OSX Specific
 #

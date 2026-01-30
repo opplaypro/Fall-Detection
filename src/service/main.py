@@ -5,7 +5,7 @@ print("### SERVICE STARTED ###")
 
 PythonService = autoclass('org.kivy.android.PythonService')
 service = PythonService.mService
-# service.setAutoRestart(True)
+service.setAutoRestartService(True)
 
 while True:
     print("SERVICE RUNNING")
