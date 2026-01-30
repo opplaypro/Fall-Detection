@@ -199,7 +199,7 @@ class Sensor:
                 self.gyroscope_data_buffer.add_sample(x, y, z)
 
         except Exception as e:
-            pass
+            logger.error(f"Error updating sensor data: {e}")
 
     def _run_loop(self, dt: float):
         while not self._stop_event.is_set():

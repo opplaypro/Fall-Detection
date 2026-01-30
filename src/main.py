@@ -1,11 +1,12 @@
 from core import log
 import ui  # noqa: F401
+from android import AndroidService  # noqa: F401 # type: ignore
 
 import kivy
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.clock import mainthread
-from oscpy.server import OSCThreadServer
+# from oscpy.server import OSCThreadServer
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -65,47 +66,9 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
-        # start OSC server and bind handlers
-        self.osc_server = OSCThreadServer()
-        self.osc_server.listen(address='127.0.0.1', port=3000, default=True)
-        self.osc_server.bind(b'/update', self.handle_update)
-        self.osc_server.bind(b'/error', self.handle_error)
-
-        if kivy.platform == 'android':
-            try:
-                from jnius import autoclass
-                PythonActivity = autoclass('org.kivy.android.PythonActivity')
-                Intent = autoclass('android.content.Intent')
-                String = autoclass('java.lang.String')
-
-                activity = PythonActivity.mActivity
-
-                domain_name = 'com.github.opplaypro.falldetection'
-                service_name = 'ServiceFalldetection'
-                service_class_name = f'{domain_name}.{service_name}'
-                try:
-                    service_class = autoclass(service_class_name)
-                    intent = Intent(activity, service_class)
-
-                    intent.putExtra(
-                        "python_service_argument", String(""))
-
-                    intent.putExtra(
-                        "python_service_script", String("core/service.py"))
-
-                    intent.putExtra(
-                        "python_service_dir", String(
-                            activity.getFilesDir().getAbsolutePath() + "/app"))
-
-                    activity.startService(intent)
-
-                    self.logger.info("Android service started successfully")
-                except Exception as e:
-                    self.logger.error(f"Failed to start Android service: {e}")
-
-            except ImportError:
-                self.logger.error("Failed to import android module")
-        return super().on_start()
+        service = AndroidService('Fall Detection Service', 'running')
+        service.start('service started')
+        self.logger.info("SERVICE: Android service started")
 
     @mainthread
     def handle_update(self, message):
