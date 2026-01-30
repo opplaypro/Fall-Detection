@@ -6,8 +6,8 @@
   "general": {
     "language": "en",
     "theme_style": "Light",
-    "theme_primary_palette": "Red",
-    "theme_accent_palette": "Blue"
+    "theme_primary_palette": "Lime",
+    "theme_accent_palette": "Pink"
   },
   "logging": {
     "level": "NOTSET"
