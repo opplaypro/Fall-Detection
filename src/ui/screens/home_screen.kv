@@ -1,26 +1,65 @@
+#:import hex kivy.utils.get_color_from_hex
 <HomeScreen>:
     # Set the background color
     md_bg_color: app.theme_cls.backgroundColor
 
-    
-    FloatLayout:
-        size_hint: 1, 1
+    MDFloatLayout:
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        size_hint: (1, 1)
 
-        # shield icon in the center
-        MDRelativeLayout:
-            size_hint: 1, None
+
+        # Fall guard text
+        MDLabel:
+            id: title_label
+            text: app.lang.get('common', {}).get('fall_label', 'Fall Guard')
+            font_style: "Display"
+            role: "medium"
+            bold: True
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.9}
+            
+        # status label
+        MDLabel:
+            id: status_label
+            text: app.lang.get('home', {}).get('all_fine', 'Monitoring active')
+            font_style: "Headline"
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.65}
+
+        # Circle in the center
+        MDFloatLayout:
+            size_hint: (0.6, None)
             height: self.width
-            pos_hint: {"top": 1, "center_x": 0.5}
-            md_bg_color: 0, 0, 0, 0
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
 
-            # shield icon
+            canvas:
+                Color:
+                    rgb: hex("54B86F")
+                    a: 0.15
+                Ellipse:
+                    size: self.width, self.width
+                    pos: self.center_x - self.width / 2, self.center_y - self.width / 2
+                Color:
+                    rgb: hex("53B76E")
+                    a: 0.15
+                Ellipse:
+                    size: self.width * 0.88, self.width * 0.88
+                    pos: self.center_x - self.width * 0.88 / 2, self.center_y - self.width * 0.88 / 2
+                Color:
+                    rgb: hex("53B76E")
+                    a: 0.35
+                Ellipse:
+                    size: self.width * 0.76, self.width * 0.76
+                    pos: self.center_x - self.width * 0.76 / 2, self.center_y - self.width * 0.76 / 2
+            
             MDIcon:
-                id: status_icon
-                icon: "shield-lock"
-                theme_color_icon: "Custom"
-                color: 0, 1, 0, 1
+                icon: "check"
+                theme_color: "Custom"
+                color: app.theme_cls.backgroundColor
                 theme_font_size: "Custom"
-                font_size: "120sp"
+                font_size: "112sp"
+                italic: False
+                bold: False
                 pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
 

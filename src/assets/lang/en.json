@@ -1,13 +1,14 @@
 {
-  "navbar": {
+  "common": {
     "home": "Home",
     "contacts": "Contacts",
     "history": "History",
     "settings": "Settings",
-    "alert": "Alert"
+    "alert": "Alert",
+    "fall_label": "Fall Guard"
   },
   "home": {
-    "a": ""
+    "all_fine": "Monitoring active"
   },
   "contacts": {
     "a": ""

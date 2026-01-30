@@ -1,10 +1,10 @@
 from core import log
 import ui  # noqa: F401
-from android import AndroidService  # noqa: F401 # type: ignore
 
 import kivy
 from kivy.lang import Builder
 from kivy.core.window import Window
+from kivy.core.text import LabelBase
 from kivy.clock import mainthread
 from oscpy.server import OSCThreadServer
 
@@ -50,12 +50,70 @@ class FallDetectionApp(MDApp):
         self.theme_cls.accent_palette = self.config.get(
             'general', {}).get('theme_accent_palette', 'Blue')
 
+        # load fonts
+        fonts_path = Path(__file__).parent / 'assets' / 'fonts'
+        LabelBase.register(
+            name='Roboto',
+            fn_regular=str(fonts_path / 'Roboto-Regular.ttf'),
+            fn_bold=str(fonts_path / 'Roboto-Bold.ttf')
+        )
+        
+        LabelBase.register(
+            name='Cabin',
+            fn_regular=str(fonts_path / 'Cabin-Regular.ttf'),
+            fn_bold=str(fonts_path / 'Cabin-Bold.ttf')
+        )
+
+        # set fonts to theme
+        self.theme_cls.font_styles["Display"] = {
+            "large": {
+                "font-name": "Cabin",
+                "font-size": "32sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            },
+            "medium": {
+                "font-name": "Cabin",
+                "font-size": "28sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            },
+            "small": {
+                "font-name": "Cabin",
+                "font-size": "24sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            }
+        }
+        
+        self.theme_cls.font_styles["Headline"] = {
+            "large": {
+                "font-name": "Roboto",
+                "font-size": "32sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            },
+            "medium": {
+                "font-name": "Roboto",
+                "font-size": "28sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            },
+            "small": {
+                "font-name": "Roboto",
+                "font-size": "24sp",
+                "line-height": 1.1,
+                "letter-spacing": 0,
+            }
+        }
+
         # get tranlations
         lang_path = self.config.get('general', {}).get('language', 'en')
         self.logger.info(f"Setting application language to: {lang_path}")
         self.lang = json.load(open(
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
             ))
+
 
         return RootLayout()
 
@@ -66,7 +124,10 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
-
+        if kivy.platform != 'android':
+            self.logger.warning("Not running on Android, skipping service")
+            return
+        from android import AndroidService
         service = AndroidService(
             'Fall Detection Service',
             'Fall detection running',
