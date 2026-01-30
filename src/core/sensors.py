@@ -1,6 +1,7 @@
-from kivy.clock import Clock
+import threading
 from plyer import accelerometer, gyroscope
 import numpy as np
+import time
 import logging
 
 
@@ -25,6 +26,7 @@ class DataBuffer:
         self.buffer_y = np.array([], dtype=float)
         self.buffer_z = np.array([], dtype=float)
         self.is_full = False
+        self.lock = threading.Lock()
 
         logger.info(f"Initializing DataBuffer with size {buffer_size}")
 
@@ -42,18 +44,20 @@ class DataBuffer:
             z-axis data
         """
         if self.buffer_x.size < self.buffer_size:
-            self.buffer_x = np.append(self.buffer_x, x).astype(float)
-            self.buffer_y = np.append(self.buffer_y, y).astype(float)
-            self.buffer_z = np.append(self.buffer_z, z).astype(float)
-            if self.buffer_x.size == self.buffer_size:
-                self.is_full = True
+            with self.lock:
+                self.buffer_x = np.append(self.buffer_x, x).astype(float)
+                self.buffer_y = np.append(self.buffer_y, y).astype(float)
+                self.buffer_z = np.append(self.buffer_z, z).astype(float)
+                if self.buffer_x.size == self.buffer_size:
+                    self.is_full = True
         else:
-            self.buffer_x = np.roll(self.buffer_x, -1)
-            self.buffer_y = np.roll(self.buffer_y, -1)
-            self.buffer_z = np.roll(self.buffer_z, -1)
-            self.buffer_x[-1] = float(x)
-            self.buffer_y[-1] = float(y)
-            self.buffer_z[-1] = float(z)
+            with self.lock:
+                self.buffer_x = np.roll(self.buffer_x, -1)
+                self.buffer_y = np.roll(self.buffer_y, -1)
+                self.buffer_z = np.roll(self.buffer_z, -1)
+                self.buffer_x[-1] = float(x)
+                self.buffer_y[-1] = float(y)
+                self.buffer_z[-1] = float(z)
 
     def get_data(self) -> np.ndarray | None:
         """
@@ -66,11 +70,15 @@ class DataBuffer:
         None
             None if buffer is not full yet
         """
-        if not self.is_full:
-            logger.error("Buffer is not full yet, cannot get data.")
-            return None
 
-        data = np.column_stack((self.buffer_x, self.buffer_y, self.buffer_z))
+        with self.lock:
+            if not self.is_full:
+                logger.error("Buffer is not full yet, cannot get data.")
+                print("LOG_ERROR_DATABUFFER | Buffer is not full yet.")
+                return None
+            data = np.column_stack(
+                (self.buffer_x, self.buffer_y, self.buffer_z)
+                )
         return data
 
 
@@ -92,16 +100,14 @@ class Sensor:
         frequency : int
             Frequency of data collection in Hz.
         """
-        if buffer_acc is None:
-            buffer_acc = DataBuffer()
-        if buffer_gyro is None:
-            buffer_gyro = DataBuffer()
+        self.accelerometer_data_buffer = buffer_acc or DataBuffer()
+        self.gyroscope_data_buffer = buffer_gyro or DataBuffer()
         self.is_active = False
         self.frequency = frequency
-        self.accelerometer_data_buffer = buffer_acc
-        self.gyroscope_data_buffer = buffer_gyro
         self.accelerometer = accelerometer
         self.gyroscope = gyroscope
+        self._stop_event = threading.Event()
+        self.start_sensor()
 
     def start_sensor(self):
         """
@@ -126,13 +132,22 @@ class Sensor:
                     raise RuntimeError("Gyroscope enable not callable.")
                 else:
                     self.gyroscope.enable()
-                Clock.schedule_interval(self.update, 1.0 / self.frequency)
+                self._stop_event.clear()
+                self._worker_thread = threading.Thread(
+                    target=self.update,
+                    args=(1.0 / self.frequency,),
+                    daemon=True
+                )
+                self._worker_thread.start()
                 self.is_active = True
                 logger.info("Sensors started")
+                print("LOG_INFO_SENSORS | Sensors started")
             except Exception as e:
                 logger.error(f"Error starting sensors: {e}")
+                print(f"LOG_ERROR_SENSORS | Error starting sensors: {e}")
         else:
             logger.warning("Sensors are already active")
+            print("LOG_WARNING_SENSORS | Sensors are already active")
 
     def stop_sensor(self):
         """
@@ -158,7 +173,8 @@ class Sensor:
                 else:
                     self.gyroscope.disable()
 
-                Clock.unschedule(self.update)
+                self._stop_event.set()
+                self._worker_thread.join()
                 self.is_active = False
                 logger.info("Sensors stopped")
             except Exception as e:
@@ -166,7 +182,7 @@ class Sensor:
         else:
             logger.warning("Sensors are not active")
 
-    def update(self, dt):
+    def update(self):
         """
         Updates the sensor data buffers.
         """
@@ -183,7 +199,12 @@ class Sensor:
                 self.gyroscope_data_buffer.add_sample(x, y, z)
 
         except Exception as e:
-            logger.error(f"Error reading sensors: {e}")
+            pass
+
+    def _run_loop(self, dt: float):
+        while not self._stop_event.is_set():
+            self.update()
+            time.sleep(dt)
 
     def get_accelerometer_data(self) -> np.ndarray | None:
         """

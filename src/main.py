@@ -1,5 +1,4 @@
 from core import log
-from core import Sensor, detect_fall
 import ui  # noqa: F401
 
 import kivy
@@ -74,12 +73,36 @@ class FallDetectionApp(MDApp):
 
         if kivy.platform == 'android':
             try:
-                import android
-                android.start_service(
-                    title='Fall Service',
-                    description='Fall Detection Service',
-                    arg=''
-                    )
+                from jnius import autoclass
+                PythonActivity = autoclass('org.kivy.android.PythonActivity')
+                Intent = autoclass('android.content.Intent')
+                String = autoclass('java.lang.String')
+
+                activity = PythonActivity.mActivity
+
+                domain_name = 'com.github.opplaypro.falldetection'
+                service_name = 'ServiceFalldetection'
+                service_class_name = f'{domain_name}.{service_name}'
+                try:
+                    service_class = autoclass(service_class_name)
+                    intent = Intent(activity, service_class)
+
+                    intent.putExtra(
+                        "python_service_argument", String(""))
+
+                    intent.putExtra(
+                        "python_service_script", String("core/service.py"))
+
+                    intent.putExtra(
+                        "python_service_dir", String(
+                            activity.getFilesDir().getAbsolutePath() + "/app"))
+
+                    activity.startService(intent)
+
+                    self.logger.info("Android service started successfully")
+                except Exception as e:
+                    self.logger.error(f"Failed to start Android service: {e}")
+
             except ImportError:
                 self.logger.error("Failed to import android module")
         return super().on_start()

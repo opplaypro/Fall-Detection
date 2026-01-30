@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,plyer,numpy,kivymd,materialyoucolor,asynckivy,asyncgui,toml
+requirements = python3,kivy,plyer,numpy,kivymd,materialyoucolor,asynckivy,asyncgui,oscpy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -54,8 +54,7 @@ requirements = python3,kivy,plyer,numpy,kivymd,materialyoucolor,asynckivy,asyncg
 orientation = portrait
 
 # (list) List of service to declare
-#services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
-
+services = falldetection:core/service.py
 #
 # OSX Specific
 #
@@ -95,7 +94,7 @@ fullscreen = 1
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-#android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
+android.permissions = INTERNET, WAKE_LOCK, VIBRATE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
