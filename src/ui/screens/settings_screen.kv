@@ -1,37 +1,84 @@
+<SettingPanel>:
+    size_hint: (0.9, None)
+    height: "120dp"
+    padding: "16dp", 0
+    radius: self.height / 4
+    md_bg_color: app.theme_cls.secondaryContainerColor
+    style: "elevated"
+    elevation: 4
+    pos_hint: {"center_x": 0.5}
+    ripple_behavior: False
+    MDBoxLayout:
+        orientation: "horizontal"
+        padding: "10dp"
+        spacing: "10dp"
+        
+        MDLabel:
+            text: root.setting_name
+            halign: "left"
+            valign: "center"
+            font_style: "Title"
+            role: "medium"
+
+        MDSwitch
+            active: root.enabled
+            pos_hint: {"center_y": 0.5}
+            halign: "right"
+            valign: "center"
+            font_style: "Title"
+            role: "medium"
+            theme_text_color: "Secondary"
+            on_active: app.on_setting_toggle(root.setting_name, self.active)
+
 <SettingsScreen>:
     # Set the background color
     md_bg_color: app.theme_cls.backgroundColor
 
-    
-    FloatLayout:
-        size_hint: 1, 1
+    MDFloatLayout:
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        size_hint: (1, 1)
 
-        MDLabel:
-            text: "Welcome to the Settings Screen"
-            font_size: '24sp'
-            adaptive_size: True
-            pos_hint: {"center_x": 0.5, "top": 0.8}
-        
-        MDIcon:
-            id: status_icon
-            icon: "shield-check"
-            theme_color_icon: "Custom"
-            color: 0, 1, 0, 1
-            theme_font_size: "Custom"
-            font_size: "250sp"
-            pos_hint: {"center_x": 0.5, "top": 0.75}
-        
-        MDLabel:
-            id: accelerometer_data
-            text: f"G Placeholder m/s²"
-            font_size: '18sp'
-            adaptive_size: True
-            pos_hint: {"center_x": 0.5, "top": 0.45}
 
+        # Fall guard text
+        MDLabel:
+            id: title_label
+            text: app.lang.get('common', {}).get('fall_label', 'Fall Guard')
+            font_style: "Display"
+            role: "medium"
+            bold: True
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.9}
         
-        MDWidget:
-            id: color_display
-            size_hint: None, 0.3
-            width: self.height
-            pos_hint: {"center_x": 0.5, "center_y": 0.1}
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: "0dp", "160dp", "0dp", "0dp"
+        spacing: "8dp"
+        height: self.minimum_height
+        MDBoxLayout:
+            id: last_falls
+            padding: "16dp", "0dp", "16dp", "0dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            size_hint_y: None
+            height: self.minimum_height
+            MDIcon:
+                icon: "cog"
+                theme_color: "Custom"
+                color: app.theme_cls.secondaryColor
+                theme_font_size: "Custom"
+                font_size: "32sp"
+                padding: "0dp", "0dp", "16dp", "0dp"
+                pos_hint: {"center_x": 0.5, "center_y": 0.75}
+            MDLabel:
+                text: app.lang.get('history', {}).get('no_history', 'Settings')
+                font_style: "Title"
+                halign: "left"
+                valign: "center"
+                pos_hint: {"center_x": 0.5, "center_y": 0.75}
+
+        MDScrollView:
+            MDBoxLayout:
+                id: settings_container
+                orientation: "vertical"
+                adaptive_height: True
+                padding: "16dp"
+                spacing: "8dp"
