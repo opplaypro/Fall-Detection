@@ -46,11 +46,11 @@ class SettingsScreen(MDScreen):
         app = MDApp.get_running_app()
         
         # Load settings from app config
-        data = app.config.get('settings', {
-            "Fall Detection": True,
-            "Notifications": False,
-            "Sound Alerts": False
-        })
+        # If settings section doesn't exist, use empty dict (config.json should have defaults)
+        data = app.config.get('settings', {})
+        
+        if not data:
+            logger.warning("No settings found in config, settings screen will be empty")
         
         self.ids.settings_container.clear_widgets()
 

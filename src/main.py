@@ -34,8 +34,9 @@ class FallDetectionApp(MDApp):
         self.logger = logging.getLogger(__name__)
 
         # load configuration
-        config_path = Path(__file__).parent / 'config' / 'config.json'
-        self.config = json.load(open(config_path))
+        self.config_path = Path(__file__).parent / 'config' / 'config.json'
+        with open(self.config_path, 'r') as f:
+            self.config = json.load(f)
         self.logger.info("Configuration loaded")
 
         # set logging level to config value
@@ -143,9 +144,8 @@ class FallDetectionApp(MDApp):
         self.config['settings'][setting_name] = enabled
         
         # Save the config to file
-        config_path = Path(__file__).parent / 'config' / 'config.json'
         try:
-            with open(config_path, 'w') as f:
+            with open(self.config_path, 'w') as f:
                 json.dump(self.config, f, indent=2)
             self.logger.debug(f"Configuration saved with {setting_name}={enabled}")
         except Exception as e:
