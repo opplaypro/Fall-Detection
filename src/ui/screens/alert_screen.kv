@@ -1,0 +1,78 @@
+#:import hex kivy.utils.get_color_from_hex
+<AlertScreen>:
+    # Set the background color
+    md_bg_color: app.theme_cls.backgroundColor
+
+    MDFloatLayout:
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        size_hint: (1, 1)
+
+
+        # Fall guard text
+        MDLabel:
+            id: title_label
+            text: app.lang.get('common', {}).get('fall_label', 'Fall Guard')
+            font_style: "Display"
+            role: "medium"
+            bold: True
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.9}
+            
+        # status label
+        MDLabel:
+            id: status_label
+            text: app.lang.get('alert', {}).get('detected', 'Fall detected!')
+            font_style: "Headline"
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.65}
+
+        # Circle in the center
+        MDFloatLayout:
+            size_hint: (0.6, None)
+            height: self.width
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+
+            canvas:
+                Color:
+                    rgb: hex("FE2C55")
+                    a: 0.15
+                Ellipse:
+                    size: self.width, self.width
+                    pos: self.center_x - self.width / 2, self.center_y - self.width / 2
+                Color:
+                    rgb: hex("FE2C55")
+                    a: 0.15
+                Ellipse:
+                    size: self.width * 0.88, self.width * 0.88
+                    pos: self.center_x - self.width * 0.88 / 2, self.center_y - self.width * 0.88 / 2
+                Color:
+                    rgb: hex("FE2C55")
+                    a: 0.35
+                Ellipse:
+                    size: self.width * 0.76, self.width * 0.76
+                    pos: self.center_x - self.width * 0.76 / 2, self.center_y - self.width * 0.76 / 2
+            
+            MDLabel:
+                text: app.lang.get('alert', {}).get('sos', 'SOS')
+                adaptive_size: True
+                theme_color: "Custom"
+                color: app.theme_cls.backgroundColor
+                theme_font_size: "Custom"
+                font_size: "82sp"
+                bold: True
+                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        
+        MDChip:
+            padding: "30dp"
+            id: false_alarm_card
+            type: "suggestion"
+            adaptive_width: True
+            adaptive_height: True
+            pos_hint: {"center_x": 0.5, "center_y": 0.1}
+            size_hint: (None, None)
+            on_release: app.on_false_alarm()
+
+            MDChipText:
+                text: app.lang.get('alert', {}).get('false_alarm', 'False Alarm')
+                font_style: "Headline"
+                role: "medium"

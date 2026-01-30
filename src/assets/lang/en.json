@@ -20,6 +20,8 @@
     "a": ""
   },
   "alert": {
-    "a": ""
+    "detected": "Fall detected!",
+    "sos": "SOS",
+    "false_alarm": "False Alarm"
   }
 }

@@ -57,7 +57,7 @@ class FallDetectionApp(MDApp):
             fn_regular=str(fonts_path / 'Roboto-Regular.ttf'),
             fn_bold=str(fonts_path / 'Roboto-Bold.ttf')
         )
-        
+
         LabelBase.register(
             name='Cabin',
             fn_regular=str(fonts_path / 'Cabin-Regular.ttf'),
@@ -85,7 +85,7 @@ class FallDetectionApp(MDApp):
                 "letter-spacing": 0,
             }
         }
-        
+
         self.theme_cls.font_styles["Headline"] = {
             "large": {
                 "font-name": "Roboto",
@@ -114,8 +114,10 @@ class FallDetectionApp(MDApp):
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
             ))
 
-
         return RootLayout()
+
+    def on_false_alarm(self):
+        pass  # TODO
 
     def on_switch_tabs(self, bar, item, icon, label):
         self.logger.debug(f"Switching to tab: {label}")
@@ -127,7 +129,7 @@ class FallDetectionApp(MDApp):
         if kivy.platform != 'android':
             self.logger.warning("Not running on Android, skipping service")
             return
-        from android import AndroidService
+        from android import AndroidService  # type: ignore
         service = AndroidService(
             'Fall Detection Service',
             'Fall detection running',
