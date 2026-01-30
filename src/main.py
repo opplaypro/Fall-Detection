@@ -114,6 +114,10 @@ class FallDetectionApp(MDApp):
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
             ))
 
+        self.history = json.load(open(
+            Path(__file__).parent / 'data' / 'history.json'
+            ))
+
         return RootLayout()
 
     def on_false_alarm(self):

@@ -2,10 +2,7 @@ from kivy.properties import StringProperty, ColorProperty
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.card import MDCard
 from kivymd.app import MDApp
-from pathlib import Path
-import kivy
 import logging
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -58,13 +55,7 @@ class HistoryScreen(MDScreen):
         )
 
     def load_history(self) -> None:
-        App = MDApp.get_running_app()
-        file_rel = App.config.get(  # type: ignore
-            'fall_log', {}).get('file', 'data/history.json')
-        path = Path(App.user_data_dir) / file_rel  # type: ignore
-        if kivy.platform == "linux":
-            path = Path(__file__).parent / ".." / ".." / file_rel
-        data = json.load(open(path, 'r', encoding='utf-8'))
+        data = MDApp.get_running_app().history  # type: ignore
         self.ids.card_container.clear_widgets()
 
         for entry in data:
