@@ -42,11 +42,16 @@ class SettingsScreen(MDScreen):
         )
 
     def load_settings(self) -> None:
-        data = {
+        from kivymd.app import MDApp
+        app = MDApp.get_running_app()
+        
+        # Load settings from app config
+        data = app.config.get('settings', {
             "Fall Detection": True,
             "Notifications": False,
             "Sound Alerts": False
-        }
+        })
+        
         self.ids.settings_container.clear_widgets()
 
         for setting, state in data.items():

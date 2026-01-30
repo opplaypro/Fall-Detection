@@ -28,5 +28,10 @@
   "alert": {
     "sms_enabled": true,
     "call_enabled": true
+  },
+  "settings": {
+    "Fall Detection": true,
+    "Notifications": false,
+    "Sound Alerts": false
   }
 }

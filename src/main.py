@@ -123,6 +123,34 @@ class FallDetectionApp(MDApp):
     def on_false_alarm(self):
         pass  # TODO
 
+    def on_setting_toggle(self, setting_name: str, enabled: bool):
+        """
+        Handle setting toggle changes.
+
+        Parameters
+        ----------
+        setting_name : str
+            The name of the setting that was toggled.
+        enabled : bool
+            The new state of the setting.
+        """
+        self.logger.info(f"Setting '{setting_name}' toggled to: {enabled}")
+        
+        # Update the config
+        if 'settings' not in self.config:
+            self.config['settings'] = {}
+        
+        self.config['settings'][setting_name] = enabled
+        
+        # Save the config to file
+        config_path = Path(__file__).parent / 'config' / 'config.json'
+        try:
+            with open(config_path, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            self.logger.debug(f"Configuration saved with {setting_name}={enabled}")
+        except Exception as e:
+            self.logger.error(f"Error saving configuration: {e}")
+
     def on_switch_tabs(self, bar, item, icon, label):
         self.logger.debug(f"Switching to tab: {label}")
         self.logger.debug(f"Switching to screen id: {item.tag}")

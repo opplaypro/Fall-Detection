@@ -28,8 +28,7 @@
             font_style: "Title"
             role: "medium"
             theme_text_color: "Secondary"
-            # TODO write on_active method in app to handle setting changes
-            #on_active: app.on_setting_toggle(root.setting_name, True) if self.active else app.on_setting_toggle(root.setting_name, False)
+            on_active: app.on_setting_toggle(root.setting_name, self.active)
 
 <SettingsScreen>:
     # Set the background color
