@@ -134,7 +134,7 @@ class Sensor:
                     self.gyroscope.enable()
                 self._stop_event.clear()
                 self._worker_thread = threading.Thread(
-                    target=self.update,
+                    target=self._run_loop,
                     args=(1.0 / self.frequency,),
                     daemon=True
                 )

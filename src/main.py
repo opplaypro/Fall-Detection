@@ -6,7 +6,7 @@ import kivy
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.clock import mainthread
-# from oscpy.server import OSCThreadServer
+from oscpy.server import OSCThreadServer
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -66,6 +66,7 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
+        
         service = AndroidService(
             'Fall Detection Service',
             'Fall detection running',
@@ -73,11 +74,16 @@ class FallDetectionApp(MDApp):
         service.start('service started')
         self.logger.info("SERVICE: Android service started")
 
+        # Setup OSC server to receive messages from the service
+        self.osc = OSCThreadServer()
+        self.osc.listen(address='0.0.0.0', port=3000, default=True)
+        self.osc.bind(b'/fall_detected', self.handle_update)
+
     @mainthread
     def handle_update(self, message):
         try:
-            data = message.decode('utf-8')
-            self.logger.debug(f"Received update: {data}")
+            # data = message.decode('utf-8')
+            self.logger.debug(f"Received update: {message}")
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")
 
