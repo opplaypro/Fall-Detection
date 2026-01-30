@@ -2,7 +2,7 @@
 
 ## list of TODO things
 
-- [ ] core library
+- [x] core library
   - [x] accelerometer reading
   - [x] detection mechanism
     - [ ] ML

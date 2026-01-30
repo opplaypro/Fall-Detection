@@ -66,7 +66,7 @@ class FallDetectionApp(MDApp):
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
     def on_start(self):
-        
+
         service = AndroidService(
             'Fall Detection Service',
             'Fall detection running',
