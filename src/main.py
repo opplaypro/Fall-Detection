@@ -75,14 +75,14 @@ class FallDetectionApp(MDApp):
         self.logger.info("SERVICE: Android service started")
 
         # Setup OSC server to receive messages from the service
-        self.osc = OSCThreadServer()
-        self.osc.listen(address='0.0.0.0', port=3000, default=True)
-        self.osc.bind(b'/fall_detected', self.handle_update)
+        self.osc_server = OSCThreadServer()
+        self.osc_server.listen(address='127.0.0.1', port=3000, default=True)
+        self.osc_server.bind(b'/fall_detected', self.handle_fall_detected)
 
     @mainthread
-    def handle_update(self, message):
+    def handle_fall_detected(self, message):
         try:
-            # data = message.decode('utf-8')
+            message = message.decode('utf-8')
             self.logger.debug(f"Received update: {message}")
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")

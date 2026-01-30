@@ -1,7 +1,6 @@
 import time
 from jnius import autoclass
 import sys
-import logging
 import importlib.util
 from oscpy.client import OSCClient
 from pathlib import Path
@@ -26,6 +25,11 @@ def load_module(module_name, module_path):
         The name to assign to the loaded module.
     module_path : str
         The file path to the module to load.
+
+    Returns
+    -------
+    module
+        The loaded module.
     """
     spec = importlib.util.spec_from_file_location(module_name, module_path)
     module = importlib.util.module_from_spec(spec)  # type: ignore
@@ -82,7 +86,7 @@ while True:
         try:
             client.send_message(
                 b'/fall_detected', ['fall_detected'.encode('utf-8')]
-                )
+            )
             print("SERVICE_LOGGER_INFO: OSC message sent, FALL DETECTED")
         except Exception as e:
             print(f"SERVICE_LOGGER_ERROR: Error sending OSC message: {e}")
