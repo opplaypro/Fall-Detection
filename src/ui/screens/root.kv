@@ -22,6 +22,9 @@
     # bottom navigation bar
     MDNavigationBar:
         on_switch_tabs: app.on_switch_tabs(*args)
+        height: 0 if screen_manager.current == 'alert_screen' else self.width/5
+        opacity: 0 if screen_manager.current == 'alert_screen' else 1
+        disabled: True if screen_manager.current == 'alert_screen' else False
         # home button
         MDNavigationItem:
             tag: "home"

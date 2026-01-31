@@ -126,6 +126,35 @@ class FallDetectionApp(MDApp):
 
         return RootLayout()
 
+    def request_permissions(self):
+        if kivy.platform != 'android':
+            self.logger.warning("Not running on Android, skipping permissions")
+            return
+
+        mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        Context = autoclass('android.content.Context')
+        Intent = autoclass('android.content.Intent')
+        Uri = autoclass('android.net.Uri')
+        Settings = autoclass('android.provider.Settings')
+
+        # check for overlay permission
+        if not Settings.canDrawOverlays(mActivity):
+            self.logger.info("Requesting overlay permission")
+            intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            uri = Uri.parse("package:" + mActivity.getPackageName())
+            intent.setData(uri)
+            mActivity.startActivity(intent)
+
+        # check for battery optimization exclusion
+        pm = mActivity.getSystemService(Context.POWER_SERVICE)
+        if not pm.isIgnoringBatteryOptimizations(mActivity.getPackageName()):
+            self.logger.info("Requesting battery optimization exclusion")
+            intent = Intent(
+                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            uri = Uri.parse("package:" + mActivity.getPackageName())
+            intent.setData(uri)
+            mActivity.startActivity(intent)
+
     def on_setting_toggle(self, setting_name: str, enabled: bool):
         """
         Handle setting toggle changes.
@@ -192,6 +221,11 @@ class FallDetectionApp(MDApp):
         if kivy.platform != 'android':
             self.logger.warning("Not running on Android, skipping service")
             return
+
+        # check for permissions
+        self.request_permissions()
+
+        # start android service
         from android import AndroidService  # type: ignore
         service = AndroidService(
             'Fall Detection Service',
@@ -220,7 +254,7 @@ class FallDetectionApp(MDApp):
         try:
             message = message.decode('utf-8')
             self.logger.debug(f"Received update: {message}")
-            Clock.schedule_once(lambda dt: self.switch_to_alert_screen())
+            Clock.schedule_once(lambda dt: self.switch_to_alert_screen(), 3)
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")
 

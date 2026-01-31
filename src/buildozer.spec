@@ -96,7 +96,7 @@ android.presplash_lottie = assets/img/loading_screen.json
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE, SYSTEM_ALERT_WINDOW
+android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE, SYSTEM_ALERT_WINDOW, REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host

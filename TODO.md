@@ -8,7 +8,7 @@
     - [x] g-force threshold
   - [x] background service handler
 
-- [ ] UI
+- [x] UI
   - [x] home screen
   - [ ] UI manager
     - [ ] screen transitions
