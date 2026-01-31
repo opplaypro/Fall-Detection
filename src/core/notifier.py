@@ -1,6 +1,60 @@
 from jnius import autoclass
 from pathlib import Path
 import time
+import json
+
+
+def log_file(level: str, message: str) -> None:
+    """
+    Logs a message to the Android service log.
+
+    Parameters
+    ----------
+    level : str
+        The log level ("INFO", "ERROR", etc.).
+    message : str
+        The message to log.
+    """
+    print(f"SERVICE_LOGGER_{level.upper()}: {message}")
+
+
+def save_to_history(
+        event_date: str,
+        event_time: str,
+        event: str,
+        ) -> None:
+    """
+    Saves a fall event to the history file.
+
+    Parameters
+    ----------
+    event_date : str
+        The date of the event.
+    event_time : str
+        The time of the event.
+    event : str
+        The type of event (e.g., "fall_detected", "false_alarm").
+    """
+    history_file = Path(__file__).parent.parent / 'data' / 'history.json'
+    history_data = []
+    if history_file.exists():
+        try:
+            with open(history_file, 'r', encoding='utf-8') as f:
+                history_data = json.load(f)
+        except Exception as e:
+            log_file("ERROR", f"Error reading history file: {e}")
+    new_entry = {
+        "date": event_date,
+        "time": event_time,
+        "event": event
+    }
+    history_data.append(new_entry)
+    try:
+        with open(history_file, 'w', encoding='utf-8') as f:
+            json.dump(history_data, f, ensure_ascii=False, indent=2)
+        log_file("INFO", "Event saved to history.")
+    except Exception as e:
+        log_file("ERROR", f"Error writing to history file: {e}")
 
 
 def launch_app():
@@ -18,10 +72,10 @@ def launch_app():
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
         intent.putExtra("fall_detected", True)
 
-        print("SERVICE_LOGGER_INFO: Launching main application")
+        log_file("INFO", "Launching main application")
         service.startActivity(intent)
     except Exception as e:
-        print(f"SERVICE_LOGGER_ERROR: Error launching main application: {e}")
+        log_file("ERROR", f"Error launching main application: {e}")
 
 
 class Alert:
@@ -57,7 +111,7 @@ class Alert:
             self.player.setAudioStreamType(self.AudioManager.STREAM_ALARM)
             self.player.prepare()
         except Exception as e:
-            print(f"SERVICE_LOGGER_ERROR: Error initializing MediaPlayer: {e}")
+            log_file("ERROR", f"Error initializing MediaPlayer: {e}")
 
     def play(self):
         if self.player is not None:

@@ -4,7 +4,7 @@
     "version": "1.0.0"
   },
   "general": {
-    "language": "pl",
+    "language": "en",
     "theme_style": "Light",
     "theme_primary_palette": "Lime",
     "theme_accent_palette": "Pink"
@@ -30,10 +30,9 @@
   },
   "settings": {
     "fall_detection": true,
-    "notifications": false,
+    "_notifications": false,
     "open_app": true,
     "play_alert": true,
-    "send_message": false,
-    "Fall Detection": true
+    "_send_message": false
   }
 }

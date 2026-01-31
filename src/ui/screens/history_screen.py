@@ -43,11 +43,11 @@ class HistoryScreen(MDScreen):
         """
 
         if event == "false_alarm":
-            color = [0, 1, 0, 1]
+            color = [1, 1, 1, 1]
         elif event == "fall_detected":
-            color = [1, 0, 0, 1]
+            color = [250/255, 220/255, 224/255, 1]
         else:
-            color = [1, 1, 0, 1]
+            color = [1, 0, 0, 1]
         return DateCard(
             date_text=date,
             time_text=time,

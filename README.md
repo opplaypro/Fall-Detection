@@ -1,15 +1,29 @@
 # Fall Detection
 
-Mobile app that detects when user falls and sends an alert
+Mobile app that detects when user falls and sends an alert/
 
-Currently WIP (Work in Progress)
+---
 
-## Installation
+## Features
+
+- works fully in background (even when app is closed)
+- when fall is detected, plays loud sound adn displays a screen, where user can say it was a false alarm (if it was)
+- history of detected falls
+
+---
+
+## Settings in-app
+
+- Fall detection - should fall detection work (default: true)
+- Open App - should app be opened when fall is  detected. If fall is detected and this is false, you cannot cancel the alarm (default: true, recommended: true)
+- Play Alert - shoud app play a loud alert when fall is detected
+
+### Installation
 
 To install app on your phone, download .apk file for your architecture and install\
 If asks to install from unknown sources, agree\
 
-## Build it yourself
+#### Build it yourself
 
 Download all files
 to build app for android, you need a linux, for iOS, you need macOS
@@ -36,7 +50,7 @@ to create a debugging apk, connect your to your phone with adb and run
 buildozer android debug deploy run
 ```
 
-## Run on desktop
+#### Run on desktop
 
 Do all steps as mentioned [earlier](#build-it-yourself) except running `buildozer`
 then simply run

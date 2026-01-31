@@ -56,6 +56,8 @@ class SettingsScreen(MDScreen):
         self.ids.settings_container.clear_widgets()
 
         for setting, state in data.items():
+            if setting.startswith('_'):
+                continue  # skip not implemented settings
             name = translations.get(setting, setting)
             panel = self.create_setting_panel(name, state)
             self.ids.settings_container.add_widget(panel)

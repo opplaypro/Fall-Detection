@@ -70,6 +70,7 @@ except Exception as e:
 # setup notifier
 launch_app = notifier.launch_app
 Alert = notifier.Alert
+save_to_history = notifier.save_to_history
 # send_message = notifier.send_message
 
 alert = Alert(
@@ -89,6 +90,7 @@ open_app_enabled = config.get('settings', {}).get('open_app', False)
 detect_enabled = config.get('settings', {}).get('fall_detection', True)
 alert_enabled = config.get('settings', {}).get('play_alert', False)
 message_enabled = config.get('settings', {}).get('send_message', False)
+fall_log_path = config.get('fall_log', {}).get('file', 'data/history.json')
 
 # setup OSC client and seerver
 client = OSCClient(HOST, PORT)
@@ -138,6 +140,11 @@ while True:
                 b'/fall_detected', ['fall_detected'.encode('utf-8')]
             )
             last_detect = True
+            save_to_history(
+                event_date=time.strftime("%Y-%m-%d"),
+                event_time=time.strftime("%H:%M:%S"),
+                event="fall_detected",
+                )
             if open_app_enabled:
                 launch_app()  # launch main app
             if alert_enabled:
