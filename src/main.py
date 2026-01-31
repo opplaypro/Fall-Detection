@@ -188,7 +188,7 @@ class FallDetectionApp(MDApp):
 
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
-    def switch_to_alert_screen(self):
+    def to_alert_screen(self):
         self.logger.info("Switching to Alert Screen")
         self.root.ids.screen_manager.current = "alert_screen"  # type: ignore
 
@@ -216,11 +216,28 @@ class FallDetectionApp(MDApp):
         except Exception as e:
             self.logger.error(f"Error minimizing app: {e}")
 
+    def check_intent(self):
+        if kivy.platform != 'android':
+            return
+
+        try:
+            PythonActivity = autoclass('org.kivy.android.PythonActivity')
+            intent = PythonActivity.mActivity.getIntent()
+            if intent.getBooleanExtra("fall_detected", False):
+                self.logger.info("App opened from fall detection")
+                intent.putExtra("fall_detected", False)
+                Clock.schedule_once(lambda dt: self.to_alert_screen(), 1)
+        except Exception as e:
+            self.logger.error(f"Error checking intent: {e}")
+
     # ran when app is started
     def on_start(self):
         if kivy.platform != 'android':
             self.logger.warning("Not running on Android, skipping service")
             return
+
+        # check if app was opened because of a fall
+        self.check_intent()
 
         # check for permissions
         self.request_permissions()
@@ -246,7 +263,7 @@ class FallDetectionApp(MDApp):
         return True
 
     def on_resume(self):
-        pass
+        self.check_intent()
 
     # handle messages from service
     @mainthread
@@ -254,7 +271,7 @@ class FallDetectionApp(MDApp):
         try:
             message = message.decode('utf-8')
             self.logger.debug(f"Received update: {message}")
-            Clock.schedule_once(lambda dt: self.switch_to_alert_screen(), 3)
+            Clock.schedule_once(lambda dt: self.to_alert_screen(), 1)
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")
 

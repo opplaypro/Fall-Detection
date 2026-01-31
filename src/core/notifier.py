@@ -16,6 +16,7 @@ def launch_app():
 
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+        intent.putExtra("fall_detected", True)
 
         print("SERVICE_LOGGER_INFO: Launching main application")
         service.startActivity(intent)
