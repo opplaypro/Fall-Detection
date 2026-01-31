@@ -27,4 +27,4 @@ class AlertScreen(MDScreen):
         except Exception as e:
             logger.error(f"Error sending stop_alert message: {e}")
         logger.info("False alarm triggered from Alert Screen")
-        self.manager.app.on_false_alarm()
+        app.on_false_alarm()

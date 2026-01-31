@@ -5,9 +5,10 @@ import kivy
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
-from kivy.clock import mainthread
+from kivy.clock import mainthread, Clock
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
+from jnius import autoclass
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -15,7 +16,6 @@ from kivymd.app import MDApp
 from pathlib import Path
 import logging
 import json
-import time
 
 
 kivy.require('2.0.0')
@@ -31,6 +31,9 @@ class RootLayout(MDBoxLayout):
 
 
 class FallDetectionApp(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.was_minimized = False
 
     def build(self):
         self.logger = logging.getLogger(__name__)
@@ -123,9 +126,6 @@ class FallDetectionApp(MDApp):
 
         return RootLayout()
 
-    def on_false_alarm(self):
-        pass  # TODO
-
     def on_setting_toggle(self, setting_name: str, enabled: bool):
         """
         Handle setting toggle changes.
@@ -159,6 +159,35 @@ class FallDetectionApp(MDApp):
 
         self.root.ids.screen_manager.current = item.tag  # type: ignore
 
+    def switch_to_alert_screen(self):
+        self.logger.info("Switching to Alert Screen")
+        self.root.ids.screen_manager.current = "alert_screen"  # type: ignore
+
+    def on_false_alarm(self):
+        sm = self.root.ids.screen_manager  # type: ignore
+
+        if sm.current == 'alert_screen':
+            sm.current = 'home'
+
+            if self.was_minimized:
+                self.minimize_app()
+                self.was_minimized = False
+
+    def no_false_alarm(self):
+        pass
+
+    def minimize_app(self):
+        try:
+            PyActivity = autoclass('org.kivy.android.PythonActivity')
+            Intent = autoclass('android.content.Intent')
+            intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            PyActivity.mActivity.startActivity(intent)
+        except Exception as e:
+            self.logger.error(f"Error minimizing app: {e}")
+
+    # ran when app is started
     def on_start(self):
         if kivy.platform != 'android':
             self.logger.warning("Not running on Android, skipping service")
@@ -178,13 +207,20 @@ class FallDetectionApp(MDApp):
         self.osc_server.bind(b'/error', self.handle_error)
         self.osc_client = OSCClient('127.0.0.1', 3001)
 
+    def on_pause(self):
+        self.was_minimized = True
+        return True
+
+    def on_resume(self):
+        pass
+
+    # handle messages from service
     @mainthread
     def handle_fall_detected(self, message):
         try:
             message = message.decode('utf-8')
             self.logger.debug(f"Received update: {message}")
-            time.sleep(2)  # wait for app to load
-            self.root.ids.screen_manager.current = 'AlertScreen'
+            Clock.schedule_once(lambda dt: self.switch_to_alert_screen())
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")
 

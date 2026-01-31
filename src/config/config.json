@@ -31,8 +31,8 @@
   "settings": {
     "fall_detection": true,
     "notifications": false,
-    "open_app": false,
-    "play_alert": false,
+    "open_app": true,
+    "play_alert": true,
     "send_message": false
   }
 }
