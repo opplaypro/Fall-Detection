@@ -26,12 +26,13 @@
     "file": "data/history.json"
   },
   "alert": {
-    "sms_enabled": true,
-    "call_enabled": true
+    "sms_enabled": true
   },
   "settings": {
-    "Fall Detection": true,
-    "Notifications": false,
-    "Sound Alerts": false
+    "fall_detection": true,
+    "notifications": false,
+    "open_app": false,
+    "play_alert": false,
+    "send_message": false
   }
 }

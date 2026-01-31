@@ -1,4 +1,5 @@
 from kivymd.uix.screen import MDScreen
+from kivymd.app import MDApp
 from kivy.properties import ListProperty
 import logging
 
@@ -18,3 +19,12 @@ class AlertScreen(MDScreen):
 
     def on_leave(self, *args):
         logger.debug("Left Alert Screen")
+
+    def false_alarm(self):
+        app = MDApp.get_running_app()
+        try:
+            app.osc_client.send_message(b'/stop_alert', [])  # type: ignore
+        except Exception as e:
+            logger.error(f"Error sending stop_alert message: {e}")
+        logger.info("False alarm triggered from Alert Screen")
+        self.manager.app.on_false_alarm()

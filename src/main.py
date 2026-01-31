@@ -7,6 +7,7 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase
 from kivy.clock import mainthread
 from oscpy.server import OSCThreadServer
+from oscpy.client import OSCClient
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
@@ -14,6 +15,7 @@ from kivymd.app import MDApp
 from pathlib import Path
 import logging
 import json
+import time
 
 
 kivy.require('2.0.0')
@@ -173,12 +175,16 @@ class FallDetectionApp(MDApp):
         self.osc_server = OSCThreadServer()
         self.osc_server.listen(address='127.0.0.1', port=3000, default=True)
         self.osc_server.bind(b'/fall_detected', self.handle_fall_detected)
+        self.osc_server.bind(b'/error', self.handle_error)
+        self.osc_client = OSCClient('127.0.0.1', 3001)
 
     @mainthread
     def handle_fall_detected(self, message):
         try:
             message = message.decode('utf-8')
             self.logger.debug(f"Received update: {message}")
+            time.sleep(2)  # wait for app to load
+            self.root.ids.screen_manager.current = 'AlertScreen'
         except Exception as e:
             self.logger.error(f"Error handling update message: {e}")
 

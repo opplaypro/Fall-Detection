@@ -44,14 +44,14 @@ class SettingsScreen(MDScreen):
     def load_settings(self) -> None:
         from kivymd.app import MDApp
         app = MDApp.get_running_app()
-        
+
         # Load settings from app config
-        # If settings section doesn't exist, use empty dict (config.json should have defaults)
-        data = app.config.get('settings', {})
-        
+        # If settings section doesn't exist, use empty dict
+        data = app.config.get('settings', {})  # type: ignore
+
         if not data:
-            logger.warning("No settings found in config, settings screen will be empty")
-        
+            logger.warning("No settings found in config, screen will be empty")
+
         self.ids.settings_container.clear_widgets()
 
         for setting, state in data.items():

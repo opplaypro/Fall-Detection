@@ -70,7 +70,7 @@
             adaptive_height: True
             pos_hint: {"center_x": 0.5, "center_y": 0.1}
             size_hint: (None, None)
-            on_release: app.on_false_alarm()
+            on_release: root.false_alarm()
 
             MDChipText:
                 text: app.lang.get('alert', {}).get('false_alarm', 'False Alarm')

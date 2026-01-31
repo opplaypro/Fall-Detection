@@ -13,7 +13,7 @@ package.domain = com.github.opplaypro
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,json,ttf
+source.include_exts = py,png,jpg,kv,atlas,json,ttf,wav
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -96,7 +96,7 @@ android.presplash_lottie = assets/img/loading_screen.json
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE
+android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE, SYSTEM_ALERT_WINDOW
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
