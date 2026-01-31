@@ -80,13 +80,13 @@ fullscreen = 1
 # red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
 # darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
 # olive, purple, silver, teal.
-#android.presplash_color = #FFFFFF
+ndroid.presplash_color = #ffffff
 
 # (string) Presplash animation using Lottie format.
 # see https://lottiefiles.com/ for examples and https://airbnb.design/lottie/
 # for general documentation.
 # Lottie files can be created using various tools, like Adobe After Effect or Synfig.
-android.presplash_lottie = assets/img/loading_screen.json
+#android.presplash_lottie = assets/img/loading_screen.json
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
 #icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
@@ -100,7 +100,7 @@ android.permissions = INTERNET, WAKE_LOCK, VIBRATE, FOREGROUND_SERVICE
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 33
+#android.api = 33
 
 # (int) Minimum API your APK / AAB will support.
 #android.minapi = 21
@@ -205,7 +205,7 @@ android.api = 33
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
 # android.enable_androidx requires android.api >= 28
-android.enable_androidx = True
+#android.enable_androidx = True
 
 # (list) add java compile options
 # this can for example be necessary when importing certain java libraries using the 'android.gradle_dependencies' option

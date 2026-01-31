@@ -5,7 +5,6 @@
 - [x] core library
   - [x] accelerometer reading
   - [x] detection mechanism
-    - [ ] ML
     - [x] g-force threshold
   - [x] background service handler
 
@@ -13,21 +12,26 @@
   - [x] home screen
   - [ ] UI manager
     - [ ] screen transitions
-  - [ ] all other screens
+  - [x] all other screens
     - [x] log history
-    - [ ] settings
-    - [ ] contacts
+    - [x] settings
   - [x] alert (when detected)
 
-- [ ] main.py
-- [ ] app info in buildozer.spec
+- [x] main.py
+- [x] app info in buildozer.spec
 - [x] file logging
 
 - [ ] assets
   - [ ] translations (one or two)
     - [ ] polish
-    - [ ] english ← main focus
-  - [ ] icons and images
+    - [x] english ← main focus
+    - [x] config
+  - [x] icons and images
+
+## TODO part two
+
+- [ ] ui.screens.contacts
+- [ ] core.algorithm.ML
 
 ## List of things do decite
 
