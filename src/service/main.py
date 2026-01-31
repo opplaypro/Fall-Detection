@@ -69,6 +69,7 @@ sensor = Sensor(frequency=SAMPLING_FREQ)
 print("SERVICE_LOGGER_INFO: Sensor initialized")
 
 
+last_detect = False
 while True:
     # main loop
     # uncomment for debugging, to see if service is running
@@ -81,14 +82,19 @@ while True:
         frequency=SAMPLING_FREQ
     )
 
-    if fall_detected:
+    if fall_detected and last_detect is False:
         # print("SERVICE_LOGGER_INFO: Fall detected, sending OSC message")
         try:
             client.send_message(
                 b'/fall_detected', ['fall_detected'.encode('utf-8')]
             )
+            last_detect = True
             print("SERVICE_LOGGER_INFO: OSC message sent, FALL DETECTED")
         except Exception as e:
             print(f"SERVICE_LOGGER_ERROR: Error sending OSC message: {e}")
 
-    time.sleep(1 / CALL_FREQ)
+    if not fall_detected:
+        last_detect = False
+    else:
+        last_detect = True
+    time.sleep(1.0 / CALL_FREQ)

@@ -136,18 +136,18 @@ class FallDetectionApp(MDApp):
             The new state of the setting.
         """
         self.logger.info(f"Setting '{setting_name}' toggled to: {enabled}")
-        
+
         # Update the config
         if 'settings' not in self.config:
             self.config['settings'] = {}
-        
+
         self.config['settings'][setting_name] = enabled
-        
+
         # Save the config to file
         try:
             with open(self.config_path, 'w') as f:
                 json.dump(self.config, f, indent=2)
-            self.logger.debug(f"Configuration saved with {setting_name}={enabled}")
+            self.logger.debug(f"Configuration saved: {setting_name}={enabled}")
         except Exception as e:
             self.logger.error(f"Error saving configuration: {e}")
 

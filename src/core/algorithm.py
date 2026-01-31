@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def detect_fall(
         accelerometer_data: np.ndarray | None,
         gyroscope_data: np.ndarray | None,
-        frequency: int
+        frequency: int,
         ) -> bool:
     """
     Detects peaks in the given data that may indicate a fall event.
@@ -27,10 +27,8 @@ def detect_fall(
     bool
         True if a fall is detected, False otherwise.
     """
-    last_return = False
     if accelerometer_data is None or gyroscope_data is None:
         logger.debug("Insufficient data for fall detection.")
-        last_return = False
         return False
 
     # calculate acceleration magnitude
@@ -44,7 +42,6 @@ def detect_fall(
     impact_indices = np.where(magnitude > impact_threshold)[0]
 
     if len(impact_indices) == 0:
-        last_return = False
         return False
 
     # Calculate window size in samples
@@ -57,8 +54,5 @@ def detect_fall(
 
         if np.any(pre_impact_window < free_fall_threshold):
             logger.debug(f"Fall detected: Impact at sample {i}")
-            if not last_return:
-                last_return = True
-                return True
-    last_return = False
+            return True
     return False
