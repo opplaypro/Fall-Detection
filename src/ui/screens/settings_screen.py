@@ -48,6 +48,7 @@ class SettingsScreen(MDScreen):
         # Load settings from app config
         # If settings section doesn't exist, use empty dict
         data = app.config.get('settings', {})  # type: ignore
+        translations = app.lang.get('settings', {})  # type: ignore
 
         if not data:
             logger.warning("No settings found in config, screen will be empty")
@@ -55,7 +56,8 @@ class SettingsScreen(MDScreen):
         self.ids.settings_container.clear_widgets()
 
         for setting, state in data.items():
-            panel = self.create_setting_panel(setting, state)
+            name = translations.get(setting, setting)
+            panel = self.create_setting_panel(name, state)
             self.ids.settings_container.add_widget(panel)
 
     def on_enter(self, *args):

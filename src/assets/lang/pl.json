@@ -1,0 +1,32 @@
+{
+  "common": {
+    "home": "Dom",
+    "contacts": "Kontakty",
+    "history": "Historia",
+    "settings": "Ustawienia",
+    "alert": "Alert",
+    "fall_label": "Fall Guard"
+  },
+  "home": {
+    "all_fine": "Monitorowanie aktywne"
+  },
+  "contacts": {
+    "a": ""
+  },
+  "history": {
+    "no_history": "Brak zarejestrowanych zdarzeń."
+  },
+  "settings": {
+    "settings": "Ustawienia",
+    "fall_detection": "Wykrywanie upadku",
+    "notifications": "Powiadomienia",
+    "open_app": "Otwarcie aplikacji",
+    "play_alert": "Odtwarzanie alertu",
+    "send_message": "Wysyłanie wiadomości"
+  },
+  "alert": {
+    "detected": "Wykryto upadek!",
+    "sos": "SOS",
+    "false_alarm": "Fałszywy alarm"
+  }
+}

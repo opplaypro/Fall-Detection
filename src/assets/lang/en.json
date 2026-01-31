@@ -13,11 +13,16 @@
   "contacts": {
     "a": ""
   },
-  "log": {
-    "a": ""
+  "history": {
+    "no_history": "No fall events recorded."
   },
   "settings": {
-    "a": ""
+    "settings": "Settings",
+    "fall_detection": "Fall Detection",
+    "notifications": "Notifications",
+    "open_app": "Open App",
+    "play_alert": "Play Alert",
+    "send_message": "Send Message"
   },
   "alert": {
     "detected": "Fall detected!",
