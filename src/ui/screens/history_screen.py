@@ -58,7 +58,7 @@ class HistoryScreen(MDScreen):
         data = MDApp.get_running_app().history  # type: ignore
         self.ids.card_container.clear_widgets()
 
-        for entry in data:
+        for entry in data[::-1]:  # from newest to oldest
             card = self.create_card(
                 date=entry.get('date', 'N/A'),
                 time=entry.get('time', 'N/A'),

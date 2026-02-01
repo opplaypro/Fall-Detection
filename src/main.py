@@ -120,10 +120,9 @@ class FallDetectionApp(MDApp):
             Path(__file__).parent / 'assets' / 'lang' / f'{lang_path}.json'
             ))
 
-        self.history = json.load(open(
-            Path(__file__).parent / 'data' / 'history.json'
-            ))
-
+        # load fall history
+        with open(Path(__file__).parent / 'data' / 'history.json', 'r') as f:
+            self.history = json.load(f)
         return RootLayout()
 
     def request_permissions(self):
