@@ -1,23 +1,24 @@
 # Pliki i ich funkcje
 
 Wszystkie pliki znajdują się w folderze `src` (aby było czytelniej)\
+```
 .\
-├── `buildozer.spec`\
-├── `core`\
-│   ├── `__init__.py`\
-│   ├── `algorithm.py`\
-│   ├── `log.py`\
-│   ├── `notifier.py`\
-│   └── `sensors.py`\
-├── `main.py`\
-└── `ui`\
-    ├── `__init__.py`\
-    ├── `screen_manager.py`\
-    └── `screens`\
-        ├── `__init__.py`\
-        ├── `home_screen.kv`\
-        └── `home_screen.py`
-
+├── buildozer.spec
+├── core
+│   ├── __init__.py
+│   ├── algorithm.py
+│   ├── log.py
+│   ├── notifier.py
+│   └── sensors.py
+├── main.py
+└── ui
+    ├── __init__.py
+    ├── screen_manager.py
+    └── screens
+        ├── __init__.py
+        ├── home_screen.kv
+        └── home_screen.py
+```
 plik `main.py` to punkt startowy
 `buildozer.spec` to plik, który jest konfiguracją programu do budowania aplikacji ([`buildozer`](https://buildozer.readthedocs.io/en/latest/))
 w folderze `core` znajduje się *backend* aplikacji:
