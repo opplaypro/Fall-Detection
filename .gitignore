@@ -3,3 +3,5 @@
 /src/.buildozer
 *.log
 **/__pycache__
+*.keystore
+*.env
