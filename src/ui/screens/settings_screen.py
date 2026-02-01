@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class SettingPanel(MDScreen):
+    tag_name = StringProperty()
     setting_name = StringProperty()
     enabled = BooleanProperty()
 
@@ -18,6 +19,7 @@ class SettingsScreen(MDScreen):
 
     def create_setting_panel(
             self,
+            tag_name: str,
             name: str,
             enabled: bool
             ) -> SettingPanel:
@@ -26,6 +28,8 @@ class SettingsScreen(MDScreen):
 
         Parameters
         ----------
+        tag : str
+            The tag identifier for the setting.
         name : str
             The name of the setting.
         enabled : bool
@@ -37,6 +41,7 @@ class SettingsScreen(MDScreen):
             The constructed setting panel.
         """
         return SettingPanel(
+            tag_name=tag_name,
             setting_name=name,
             enabled=enabled
         )
@@ -59,7 +64,7 @@ class SettingsScreen(MDScreen):
             if setting.startswith('_'):
                 continue  # skip not implemented settings
             name = translations.get(setting, setting)
-            panel = self.create_setting_panel(name, state)
+            panel = self.create_setting_panel(setting, name, state)
             self.ids.settings_container.add_widget(panel)
 
     def on_enter(self, *args):

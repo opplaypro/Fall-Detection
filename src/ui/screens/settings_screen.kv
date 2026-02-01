@@ -14,13 +14,14 @@
         spacing: "10dp"
         
         MDLabel:
+            tag: root.tag_name
             text: root.setting_name
             halign: "left"
             valign: "center"
             font_style: "Title"
             role: "medium"
 
-        MDSwitch
+        MDSwitch:
             active: root.enabled
             pos_hint: {"center_y": 0.5}
             halign: "right"
@@ -28,7 +29,7 @@
             font_style: "Title"
             role: "medium"
             theme_text_color: "Secondary"
-            on_active: app.on_setting_toggle(root.setting_name, self.active)
+            on_active: app.on_setting_toggle(root.tag_name, self.active)
 
 <SettingsScreen>:
     # Set the background color

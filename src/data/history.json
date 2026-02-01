@@ -1,22 +1,7 @@
 [
     {
-        "date": "30-01-2026",
-        "time": "14:00",
-        "event": "false_alarm"
-    },
-    {
-        "date": "30-01-2026",
-        "time": "15:00",
-        "event": "false_alarm"
-    },
-    {
-        "date": "30-01-2026",
-        "time": "16:00",
-        "event": "fall_detected"
-    },
-    {
-        "date": "30-01-2026",
-        "time": "17:00",
+        "date": "01-01-1970",
+        "time": "00:00:00",
         "event": "false_alarm"
     }
 ]
